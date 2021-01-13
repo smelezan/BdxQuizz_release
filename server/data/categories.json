@@ -1,0 +1,98 @@
+[
+    {
+        "categoryId": 9,
+        "name": "General Knowledge"
+    },
+    {
+        "categoryId": 10,
+        "name": "Books"
+    },
+    {
+        "categoryId": 11,
+        "name": "Film"
+    },
+    {
+        "categoryId": 12,
+        "name": "Music"
+    },
+    {
+        "categoryId": 13,
+        "name": "Musicals & Theatres"
+    },
+    {
+        "categoryId": 14,
+        "name": "Television"
+    },
+    {
+        "categoryId": 15,
+        "name": "Video Games"
+    },
+    {
+        "categoryId": 16,
+        "name": "Board Games"
+    },
+    {
+        "categoryId": 17,
+        "name": "Science & Nature"
+    },
+    {
+        "categoryId": 18,
+        "name": "Computers"
+    },
+    {
+        "categoryId": 19,
+        "name": "Mathematics"
+    },
+    {
+        "categoryId": 20,
+        "name": "Mythology"
+    },
+    {
+        "categoryId": 21,
+        "name": "Sports"
+    },
+    {
+        "categoryId": 22,
+        "name": "Geography"
+    },
+    {
+        "categoryId": 23,
+        "name": "History"
+    },
+    {
+        "categoryId": 24,
+        "name": "Politics"
+    },
+    {
+        "categoryId": 25,
+        "name": "Art"
+    },
+    {
+        "categoryId": 26,
+        "name": "Celebrities"
+    },
+    {
+        "categoryId": 27,
+        "name": "Animals"
+    },
+    {
+        "categoryId": 28,
+        "name": "Vehicles"
+    },
+    {
+        "categoryId": 29,
+        "name": "Comics"
+    },
+    {
+        "categoryId": 30,
+        "name": "Gadgets"
+    },
+    {
+        "categoryId": 31,
+        "name": "Japanese Anime & Manga"
+    },
+    {
+        "categoryId": 32,
+        "name": "Cartoon & Animations"
+    }
+]

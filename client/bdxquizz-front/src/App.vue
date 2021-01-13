@@ -1,27 +1,19 @@
 <template>
   <div id="app">
-    <p>{{ categories }}</p>
+    <Navbar />
+    <router-view />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import Navbar from '@/components/Navbar.vue';
+
 export default {
-  name: 'App',
-  data() {
-    return {
-      categories: [],
-    };
-  },
-  components: {},
-  created() {
-    axios
-      .get('http://localhost:4000/categories')
-      .then((res) => (this.categories = res.data));
+  components: {
+    Navbar,
   },
 };
 </script>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -29,6 +21,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

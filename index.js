@@ -2,38 +2,38 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const history = require('connect-history-api-fallback');
+
 require('dotenv').config();
 
 const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: /.*/,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
+});
+const config = require('./config');
+
+const categoriesRoute = require('./server/routes/categories');
+const authRoute = require('./server/routes/auth');
+const userRoute = require('./server/routes/user');
+const roomRoute = require('./server/routes/room');
+
 const PORT = process.env.PORT || 4000;
-const DB = `mongodb://${process.env.DB_ADDRESS}:${process.env.DB_PORT}/bdx-quizz-db`;
+console.log(config.DB);
 mongoose
-  .connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(config.DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    retryWrites: false,
+  })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const connection = mongoose.createConnection(DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const sessionStore = new MongoStore({
-  mongooseConnection: connection,
-  collection: 'sessions',
-});
-app.use(
-  session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-    store: sessionStore,
-  })
-);
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -50,17 +50,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-  cors: {
-    origin: /.*/,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['my-custom-header'],
-    credentials: true,
-  },
-});
-const categoriesRoute = require('./server/routes/categories');
-
 http.listen(PORT);
 // socket io
 io.on('connection', (socket) => {
@@ -69,12 +58,16 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 });
+app.use(history({ index: 'index.html' }));
 
 app.use(express.static('./client/bdxquizz-front/dist'));
 app.get('/', (req, res) => {
   res.sendFile('index.html', {
-    root: `${__dirname}/client/yt-sharing-front/dist/`,
+    root: `${__dirname}/client/bdxquizz-front/dist/`,
   });
 });
 
-app.use('/categories/', categoriesRoute);
+app.use('/api/categories/', categoriesRoute);
+app.use('/api/auth/', authRoute);
+app.use('/api/user/', userRoute);
+app.use('/api/room/', roomRoute);

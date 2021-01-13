@@ -5,3 +5,10 @@ exports.getAllCategories = (req, res) => {
     res.status(200).json({ categories });
   });
 };
+
+exports.getOneCategory = (req, res) => {
+  const { id } = req.params;
+  Category.findById(id).then((categorie) => {
+    res.status(200).json({ categorie });
+  });
+};

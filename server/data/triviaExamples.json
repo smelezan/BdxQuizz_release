@@ -1,0 +1,123 @@
+{
+    "response_code": 0,
+    "results": [
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "hard",
+            "question": "Which was the first of Alfred Hitchcock&#039;s movies to be filmed in colour?",
+            "correct_answer": "Rope",
+            "incorrect_answers": [
+                "Psycho",
+                "Vertigo",
+                "Rebecca"
+            ]
+        },
+        {
+            "category": "Entertainment: Music",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "Which country is singer Kyary Pamyu Pamyu from?",
+            "correct_answer": "Japan",
+            "incorrect_answers": [
+                "South Korea",
+                "China",
+                "Vietnam"
+            ]
+        },
+        {
+            "category": "Art",
+            "type": "multiple",
+            "difficulty": "hard",
+            "question": "Albrecht D&uuml;rer&#039;s birthplace and place of death were in...",
+            "correct_answer": "N&uuml;rnberg",
+            "incorrect_answers": [
+                "Augsburg",
+                "Bamberg",
+                "Berlin"
+            ]
+        },
+        {
+            "category": "Entertainment: Cartoon & Animations",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "Which of these is not a real character in the cartoon series My Little Pony: Friendship is Magic?",
+            "correct_answer": "Rose Marene",
+            "incorrect_answers": [
+                "Pinkie Pie",
+                "Maud Pie",
+                "Rainbow Dash"
+            ]
+        },
+        {
+            "category": "Animals",
+            "type": "boolean",
+            "difficulty": "easy",
+            "question": "Rabbits are rodents.",
+            "correct_answer": "False",
+            "incorrect_answers": [
+                "True"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "In the Friday The 13th series, what is Jason&#039;s mother&#039;s first name?",
+            "correct_answer": "Pamela",
+            "incorrect_answers": [
+                "Mary",
+                "Christine",
+                "Angeline"
+            ]
+        },
+        {
+            "category": "Entertainment: Video Games",
+            "type": "multiple",
+            "difficulty": "easy",
+            "question": "What was the first game in the &quot;Battlefield&quot; series?",
+            "correct_answer": "Battlefield 1942",
+            "incorrect_answers": [
+                "Battlefield Vietnam",
+                "Battlefield 2",
+                "Battlefield 1"
+            ]
+        },
+        {
+            "category": "Entertainment: Film",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "Which star actor was in &quot;Top Gun&quot;, &quot;Jerry Maguire&quot; and &quot;Born on the Fourth of July&quot;?",
+            "correct_answer": "Tom Cruise",
+            "incorrect_answers": [
+                "Kelly McGillis",
+                "John Travolta",
+                "George Clooney"
+            ]
+        },
+        {
+            "category": "Science: Computers",
+            "type": "multiple",
+            "difficulty": "hard",
+            "question": "The acronym &quot;RIP&quot; stands for which of these?",
+            "correct_answer": "Routing Information Protocol",
+            "incorrect_answers": [
+                "Runtime Instance Processes",
+                "Regular Interval Processes",
+                "Routine Inspection Protocol"
+            ]
+        },
+        {
+            "category": "Entertainment: Video Games",
+            "type": "multiple",
+            "difficulty": "medium",
+            "question": "What is a Tetris piece called?",
+            "correct_answer": "Tetromino",
+            "incorrect_answers": [
+                "Tetratile",
+                "Tetris",
+                "Tetripiece"
+            ]
+        }
+    ]
+}
