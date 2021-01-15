@@ -29,9 +29,19 @@ services:
       - '4000:4000'
     networks:
       - bdx-quizz
+    depends_on:
+      - mongodb
     volumes:
       - ./:/app
       - /app/node_modules
+
+  mongodb:
+    image: mongo
+    container_name: database
+    ports:
+      - 27018:27017
+    networks:
+      - bdx-quizz
 
 networks:
   bdx-quizz:
