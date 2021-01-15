@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <b-navbar toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="#"
+  <div id="navbar">
+    <b-navbar toggleable="lg" type="dark">
+      <b-navbar-brand href="/"
         ><img
           src="@/assets/logo/Logo_white.png"
           alt="logo"
-          height="50"
-          width="50"
+          height="100"
+          width="100"
       /></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
+        <b-navbar-nav id="roads">
           <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
-          <b-nav-item> <router-link to="/about">About</router-link></b-nav-item>
-
-          <b-nav-item href="#" disabled>Disabled</b-nav-item>
+          <b-nav-item><router-link to="/about">About</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
+        <b-navbar-nav id="logs" class="ml-auto">
           <div v-if="isLoggedIn">
             <b-nav-item-dropdown right>
               <!-- Using 'button-content' slot -->
@@ -46,7 +44,7 @@
       </b-collapse>
     </b-navbar>
 
-    <b-modal v-model="modalShow" title="Modal Variants" :hide-footer="true">
+    <b-modal v-model="modalShow" title="Login or sign up" :hide-footer="true">
       <modale-signup @on-click-event="handleLogEvent" />
     </b-modal>
   </div>
@@ -92,3 +90,44 @@ export default {
   },
 };
 </script>
+
+<style>
+#navbar{
+  background-color: transparent;
+}
+#roads > li > a > a{
+  color: white;
+  font-size: x-large;
+  text-decoration: none;
+}
+#roads > li > a > a:after {
+  background: none repeat scroll 0 0 transparent;
+  bottom: 25%;
+  content: "";
+  display: block;
+  height: 2px;
+  position: relative;
+  background: #ffffff;
+  transition: width 0.3s ease 0s, left 0.3s ease 0s;
+  width: 0;
+}
+#roads > li > a > a:hover:after {
+  width: 100%;
+  left: 0;
+}
+#logs > div > li > a{
+  font-size: large;
+  outline: none;
+}
+#logs > div > li{
+  outline: none;
+
+}
+/* a > a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+a > a:active {
+  text-decoration: none;
+} */
+</style>

@@ -5,7 +5,7 @@
         id="input-1"
         v-model="form.username"
         type="text"
-        placeholder="Enter username"
+        placeholder="Put your username here"
         required
       ></b-form-input>
       <b-form-invalid-feedback :state="validation">
@@ -17,7 +17,7 @@
       <b-form-input
         id="input-2"
         v-model="form.password"
-        placeholder="Enter password"
+        placeholder="And your password here"
         required
         type="password"
       ></b-form-input>
@@ -26,8 +26,8 @@
       </b-form-invalid-feedback>
     </b-form-group>
 
-    <b-button @click="handleLogin" variant="primary"> Login </b-button>
-    <b-button variant="primary" @click="handleSignup"> Signup </b-button>
+    <b-button class="mr-2" @click="handleLogin" variant="primary"> Login </b-button>
+    <b-button class="ml-2" variant="success" @click="handleSignup"> Sign up </b-button>
   </b-form>
 </template>
 
