@@ -72,7 +72,7 @@ html {
     #e0faff
   );
   position: absolute;
-  min-height: 70vh;
+  min-height: 1500px;
   width: 2200px;
   top: -50px;
   left: -250px;
