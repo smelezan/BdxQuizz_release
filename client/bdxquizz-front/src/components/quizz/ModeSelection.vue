@@ -1,13 +1,18 @@
 <template>
   <b-container style="margin: 0px; max-width: 100%">
-    <h1>{{ categoryName }}</h1>
-    <h2>Select your mode</h2>
-    <b-row>
-      <b-col md="2"></b-col>
-      <b-col md="3">
-        <b-card title="Zen" tag="article" style="max-width: 20rem" class="mb-2">
+    <b-row class="m-auto">
+      <b-col cols="auto" md="auto" class="mx-auto mb-3">
+        <b-card class="shadow"
+          title="Zen"
+          :img-src="require('@/assets/modes-images/zen.jpg')"
+          img-alt="zen"
+          img-height="132"
+          img-width="198"
+          tag="article"
+          style="height: 410px; width: 300px"
+        >
           <b-card-text> </b-card-text>
-          <b-form-group
+          <b-form-group class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -24,15 +29,18 @@
           >
         </b-card>
       </b-col>
-      <b-col md="3">
-        <b-card
-          title="Standard"
+      <b-col cols="auto" md="auto" class="mx-auto mb-3">
+        <b-card class="shadow"
+          title="Classic"
+          :img-src="require('@/assets/modes-images/classic.png')"
+          img-alt="classic"
+          img-height="132"
+          img-width="198"
           tag="article"
-          style="max-width: 20rem"
-          class="mb-2"
+          style="height: 410px; width: 300px"
         >
           <b-card-text> </b-card-text>
-          <b-form-group
+          <b-form-group class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -49,15 +57,46 @@
           </b-button>
         </b-card>
       </b-col>
-      <b-col md="3">
-        <b-card
-          title="Endless"
+      <b-col cols="auto" md="auto" class="mx-auto mb-3">
+        <b-card class="shadow"
+          title="Defy"
+          :img-src="require('@/assets/modes-images/defy.png')"
+          img-alt="defy"
+          img-height="132"
+          img-width="198"
           tag="article"
-          style="max-width: 20rem"
-          class="mb-2"
+          style="height: 410px; width: 300px"
         >
           <b-card-text> </b-card-text>
-          <b-form-group
+          <b-form-group class="mb-5"
+            id="input-group-3"
+            label="Difficulty:"
+            label-for="input-3"
+          >
+            <b-form-select
+              id="input-3"
+              v-model="form.difficulty"
+              :options="difficulty"
+              required
+            ></b-form-select>
+          </b-form-group>
+          <b-button variant="primary" @click="startQuizz('DEFY')">
+            Start quizz
+          </b-button>
+        </b-card>
+      </b-col>
+      <b-col cols="auto" md="auto" class="mx-auto mb-3">
+        <b-card class="shadow"
+          title="Endless"
+          :img-src="require('@/assets/modes-images/infinite.png')"
+          img-alt="infinite"
+          img-height="132"
+          img-width="198"
+          tag="article"
+          style="height: 410px; width: 300px"
+        >
+          <b-card-text> </b-card-text>
+          <b-form-group class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -74,8 +113,6 @@
           </b-button>
         </b-card>
       </b-col>
-
-      <b-col md="1"></b-col>
     </b-row>
   </b-container>
 </template>
@@ -100,3 +137,11 @@ export default {
   },
 };
 </script>
+
+<style>
+@media screen and (max-width: 764px){
+  #content:before{
+    height: 2300px;
+  }
+}
+</style>

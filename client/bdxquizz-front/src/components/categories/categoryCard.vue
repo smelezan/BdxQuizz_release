@@ -8,7 +8,7 @@
     img-top
     tag="article"
     style="height: 300px; width: 250px"
-    class="mb-2"
+    class="mb-2 shadow"
   >
     <router-link :to="`/quizz-room/${name}`"
       ><b-button variant="primary" class="m-auto">Play</b-button></router-link
