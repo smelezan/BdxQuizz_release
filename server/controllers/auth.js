@@ -44,7 +44,7 @@ exports.login = (req, res) => {
         title: ' login failed',
       });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY);
+    const token = jwt.sign({ userId: user._id }, 'secret_key');
     return res.status(200).json({
       title: 'login success',
       token,
