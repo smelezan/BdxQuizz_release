@@ -64,13 +64,13 @@ const Room = mongoose.Schema({
   },
 });
 
-Room.methods.getNextQuestion = async function getNextQuestion() {
-  console.log(this.currentNoQuestion);
-  console.log(this.currentNoQuestion + 1 >= this.nbQuestions);
+Room.methods.getNextQuestion = async function getNextQuestion(isFirst) {
+  if (isFirst) {
+    this.currentNoQuestion = -1;
+  }
   switch (this.mode) {
     case 'ENDLESS': {
       if (this.currentNoQuestion + 1 >= this.nbQuestions) {
-        console.log('LOOOOOOOOOOOSE');
         return undefined;
       }
       if (this.currentNoQuestion + 5 === this.nbQuestions) {
@@ -104,11 +104,6 @@ Room.methods.getAnswer = async function getAnswer(answer) {
   switch (this.mode) {
     case 'ENDLESS': {
       if (answer !== correctAnswer) {
-        console.log(answer);
-        console.log(correctAnswer);
-        console.log('LOOSERINO');
-        console.log(this.currentNoQuestion);
-        console.log(this.nbQuestions);
         this.currentNoQuestion = this.nbQuestions;
         await this.save();
       }

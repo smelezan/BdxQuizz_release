@@ -65,11 +65,13 @@ import axios from 'axios';
 export default {
   props: {
     roomCode: String,
+    socket: Object,
   },
   data() {
     return {
       question: {},
       propositionsCards: [],
+      currentAnswer: '',
       result: {
         correct: 0,
         wrong: 0,
@@ -78,7 +80,16 @@ export default {
     };
   },
   created() {
-    this.getNextQuestion();
+    this.socket.on('question', (params) => {
+      console.log(params);
+      this.displayQuestion(params);
+    });
+    this.socket.on('answer', (params) => {
+      console.log(params);
+      this.showAnswer(params.correctAnswer, this.currentAnswer);
+      this.currentAnswer = '';
+    });
+    //this.getNextQuestion();
   },
   methods: {
     getNextQuestion() {
@@ -87,7 +98,6 @@ export default {
         .then((response) => {
           if (response.data.message) {
             this.isEnded = true;
-            this.$emit('update-stats', this.result);
           } else {
             const question = response.data.question;
             this.propositionsCards = question.propositions.map(() => ({
@@ -99,24 +109,28 @@ export default {
           }
         });
     },
+    displayQuestion(question) {
+      if (question.message) {
+        this.isEnded = true;
+        this.$emit('update-stats', this.result);
+      } else {
+        this.propositionsCards = question.propositions.map(() => ({
+          header_border_variant: 'secondary',
+          header_text_variant: 'secondary',
+          border_variant: 'secondary',
+        }));
+
+        this.question = question;
+      }
+    },
     handleClick(index) {
-      const answer = this.question.propositions[index];
-      console.log(answer);
-      axios
-        .post('/api/room/answer', {
-          roomCode: this.roomCode,
-          answer,
-        })
-        .then((response) => {
-          console.log(response.data);
-          this.showAnswer(
-            response.data.correctAnswer,
-            this.question.propositions[index]
-          );
-          setTimeout(() => {
-            this.getNextQuestion();
-          }, 2000);
-        });
+      this.currentAnswer = this.question.propositions[index];
+
+      console.log(this.currentAnswer);
+      this.socket.emit('answer', {
+        roomcode: this.roomCode,
+        answer: this.currentAnswer,
+      });
     },
     showAnswer(answer, propsitionSelected) {
       const propositions = this.question.propositions;

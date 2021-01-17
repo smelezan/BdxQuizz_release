@@ -24,64 +24,76 @@ exports.getUser = (req, res) => {
   });
 };
 exports.getNotifications = (req, res) => {
-  username = req.params.id;
-  Users.findOne({ username }).then(user => {
-    notification = user.notifications;
-    res.status(200).json({ notification })
+  const username = req.params.id;
+  User.findOne({ username }).then((user) => {
+    const notification = user.notifications;
+    res.status(200).json({ notification });
   });
-}
+};
 
 exports.sendFriendRequest = (req, res) => {
-  username = req.params.id;
-  SenderUsername = req.session.username;
-  Users.findOne({ username }).then(user => {
+  const username = req.params.id;
+  const SenderUsername = req.session.username;
+  User.findOne({ username }).then((user) => {
     user.notifications.friends.push({ SenderUsername });
     user.save();
-    res.status(200).json({ message: "Friend request sent" })
-  })
-}
+    res.status(200).json({ message: 'Friend request sent' });
+  });
+};
 
 exports.cancelFriendRequest = (req, res) => {
-  username = req.params.id;
-  SenderUsername = req.session.username;
-  Users.findOne({ username }).then(user => {
-    let updatedFriendNotifications = common.arrayRemove(user.notifications.friends, SenderUsername);
+  const username = req.params.id;
+  const SenderUsername = req.session.username;
+  User.findOne({ username }).then((user) => {
+    const updatedFriendNotifications = common.arrayRemove(
+      user.notifications.friends,
+      SenderUsername
+    );
     user.notifications.friends = updatedFriendNotifications;
     user.save();
-    res.status(200).json({ message: "Friend request cancel" });
-  })
-}
+    res.status(200).json({ message: 'Friend request cancel' });
+  });
+};
 
 exports.acceptFriendRequest = (req, res) => {
-  friend = req.params.id;
-  username = req.session.username
-  Users.findOne({ username }).then(user => {
+  const friend = req.params.id;
+  const { username } = req.session;
+  User.findOne({ username }).then((user) => {
     user.friendList.push(friend);
-    let updatedFriendNotifications = common.arrayRemove(user.notifications.friends, friend);
+    const updatedFriendNotifications = common.arrayRemove(
+      user.notifications.friends,
+      friend
+    );
     user.notifications.friends = updatedFriendNotifications;
     user.save();
-    res.status(200).json({ message: "Friend added" });
-  })
-}
+    res.status(200).json({ message: 'Friend added' });
+  });
+};
 
 exports.sendPlayingInvitation = (req, res) => {
-  username = req.params.id;
-  roomCode = req.body.roomCode
-  challengerUsername = req.session.username;
-  Users.findOne({ username }).then(user => {
-    user.notifications.games.push({ "username": challengerUsername, "roomCode": roomCode });
+  const username = req.params.id;
+  const { roomCode } = req.body;
+  const challengerUsername = req.session.username;
+  User.findOne({ username }).then((user) => {
+    user.notifications.games.push({
+      username: challengerUsername,
+      roomCode,
+    });
     user.save();
-    res.status(200).json({ user })
+    res.status(200).json({ user });
   });
-}
+};
 
 exports.cancelPlayingInvitation = (req, res) => {
-  username = req.params.id;
-  challengerUsername = req.session.username;
-  Users.findOne({ username }).then(user => {
-    let remainingGames = common.arrayRemove(user.notifications.games, challengerUsername);
+  const username = req.params.id;
+  const challengerUsername = req.session.username;
+  User.findOne({ username }).then((user) => {
+    const remainingGames = common.arrayRemove(
+      user.notifications.games,
+      challengerUsername
+    );
     user.notifications.games = remainingGames;
     user.save();
     res.status(200).json({ remainingGames });
-  })
-}
+  });
+};
