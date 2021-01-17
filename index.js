@@ -22,6 +22,7 @@ const categoriesRoute = require('./server/routes/categories');
 const authRoute = require('./server/routes/auth');
 const userRoute = require('./server/routes/user');
 const roomRoute = require('./server/routes/room');
+const statsRoute = require('./server/routes/stats');
 
 const PORT = process.env.PORT || 4000;
 console.log(config.DB);
@@ -71,3 +72,4 @@ app.use('/api/categories/', categoriesRoute);
 app.use('/api/auth/', authRoute);
 app.use('/api/user/', userRoute);
 app.use('/api/room/', roomRoute);
+app.use('/api/stats/', statsRoute);

@@ -29,7 +29,7 @@ const Category = mongoose.Schema({
   },
 });
 
-Category.methods.getSuccessRatio = async function getSuccessRatio() {
+Category.methods.updateSuccessRatio = async function updateSuccessRatio() {
   if (this.stats.nbGoodAnswers + this.stats.nbBadAnswers > 0)
     this.stats.successRatio =
       (this.stats.nbGoodAnswers /

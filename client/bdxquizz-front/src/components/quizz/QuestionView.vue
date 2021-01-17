@@ -87,6 +87,7 @@ export default {
         .then((response) => {
           if (response.data.message) {
             this.isEnded = true;
+            this.$emit('update-stats', this.result);
           } else {
             const question = response.data.question;
             this.propositionsCards = question.propositions.map(() => ({
