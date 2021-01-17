@@ -25,7 +25,7 @@
               <template #button-content>
                 <em>{{ username }}</em>
               </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
+              <b-dropdown-item><router-link :to="`/user/profile`">Profile</router-link></b-dropdown-item>
               <b-dropdown-item @click="handleLogout"> Logout </b-dropdown-item>
             </b-nav-item-dropdown>
           </div>

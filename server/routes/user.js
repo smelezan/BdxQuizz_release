@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/', userCtrl.getUser);
 router.get("/:id", userCtrl.getUser);
+router.get("/profile", userCtrl.getStats);
 router.get("/notifications/:id", userCtrl.getNotifications);
 router.post("/invite/:id", userCtrl.sendFriendRequest);
 router.post("/cancel/:id", userCtrl.cancelFriendRequest);

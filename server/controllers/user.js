@@ -14,15 +14,38 @@ exports.getUser = (req, res) => {
         return res.status(401).json({
           title: 'unauthorized',
         });
-      return res.status(200).json({
-        title: 'user grabbed',
-        user: {
-          username: user.username,
-        },
-      });
+        return res.status(200).json({
+          title: 'user grabbed',
+          user: {
+            username: user.username,
+          },
+        });
     });
   });
 };
+
+exports.getStats = (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, 'secret_key', (err, decoded) => {
+    if (err)
+      return res.status(401).json({
+        title: 'unauthorized',
+      });
+    User.findById(decoded.userId, (error, user) => {
+      if (error || !user)
+        return res.status(401).json({
+          title: 'unauthorized',
+        });
+        return res.status(200).json({
+          title: 'user stats',
+          user: {
+            stats: user.stats,
+          },
+        });
+    });
+  });
+};
+
 exports.getNotifications = (req, res) => {
   username = req.params.id;
   Users.findOne({ username }).then(user => {
