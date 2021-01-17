@@ -4,6 +4,25 @@ const jwt = require('jsonwebtoken');
 const mongodb = require('mongodb');
 const { find } = require("../models/User");
 
+
+exports.getUserStats = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, 'secret_key', (err, decoded) => {
+        if (err)
+            return res.status(401).json({
+                title: 'unauthorized',
+            });
+        User.findById(decoded.userId, (error, user) => {
+            if (error || !user)
+                return res.status(401).json({
+                    title: 'unauthorized',
+                });
+            return res.status(200).json(user.stats);
+        });
+    });
+}
+
+
 exports.getStatsByCategory = (req, res) => {
     categoryId = req.params.id;
     Category.findOne({ categoryId }).then(categorie => {
