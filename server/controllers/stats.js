@@ -1,6 +1,27 @@
 const Category = require("../models/Category");
 const User = require("../models/User");
+const jwt = require('jsonwebtoken');
+const mongodb = require('mongodb');
 const { find } = require("../models/User");
+
+
+exports.getUserStats = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, 'secret_key', (err, decoded) => {
+        if (err)
+            return res.status(401).json({
+                title: 'unauthorized',
+            });
+        User.findById(decoded.userId, (error, user) => {
+            if (error || !user)
+                return res.status(401).json({
+                    title: 'unauthorized',
+                });
+            return res.status(200).json(user.stats);
+        });
+    });
+}
+
 
 exports.getStatsByCategory = (req, res) => {
     categoryId = req.params.id;
@@ -31,26 +52,38 @@ exports.getTopPlayer = (req, res) => {
     })
 }
 
-exports.updateUserStats = (req, res) => {
-    username = req.params.id;
-    categoryName = req.body.category;
-    User.updateOne({ username },
-        {
-            '$inc': {
-                ["stats.nbQuizzWon"]: req.body.nbQuizzWon,
-                ["stats.nbQuizzLost"]: req.body.nbQuizzLost,
-                ["stats.category." + categoryName + ".nbQuizzWon"]: req.body.nbQuizzWon,
-            },
-            '$set': {
-                ["stats.category." + categoryName + ".bestScore"]: req.body.bestScore,
-                ["stats.category." + categoryName + ".averageScore"]: req.body.averageScore,
-                ["stats.category." + categoryName + ".nbQuizzWon"]: req.body.nbQuizzWon,
-                ["stats.category." + categoryName + ".nbQuizzLost"]: req.body.nbQuizzLost,
-            }
+exports.updateUserStats = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, 'secret_key', (err, decoded) => {
+        if (err)
+            return res.status(401).json({
+                title: 'unauthorized',
+            });
+        categoryName = req.body.category;
+        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+            {
+                '$inc': {
+                    'stats.nbQuizzWon': req.body.nbQuizzWon,
+                    'stats.nbQuizzLost': req.body.nbQuizzLost,
+                    ["stats.category." + categoryName + ".nbQuizzWon"]: req.body.nbQuizzWon,
+                    ["stats.category." + categoryName + ".nbQuizzLost"]: req.body.nbQuizzLost,
+                },
+                // '$set': {
+                // 'stats.bestScore': req.body.score,
+                // ["stats.category." + categoryName + ".bestScore"]: req.body.score,
+                // ["stats.category." + categoryName + ".averageScore"]: req.body.averageScore,
+                // }
 
-        }, (err, result) => {
-            res.status(200).json({ message: "Updated", result: result });
+            }, (err, result) => {
+                res.status(200).json({ message: "Updated", result: result });
+            })
+        User.findById(decoded.userId).then(async user => {
+            await user.updateSuccessRatio();
+            await user.updateNumberOfQuizzPlayed();
+            await user.updateBestScore(req.body.score);
+            user.updateAverageScore(req.body.score);
         })
+    });
 }
 
 exports.getMostPlayedCategories = (req, res) => {
@@ -66,8 +99,8 @@ exports.getSuccessRatioByCategory = (req, res) => {
 }
 
 exports.updateCategoryStats = (req, res) => {
-    newCategoryId = req.params.id;
-    Category.updateOne({ categoryId: newCategoryId },
+    categoryName = req.params.id;
+    Category.updateOne({ name: categoryName },
         {
             '$inc': {
                 'stats.totalPlayed': 1,
@@ -77,9 +110,7 @@ exports.updateCategoryStats = (req, res) => {
         }, (err, result) => {
             res.status(200).json({ message: "Updated", result: result });
         })
-    Category.find({}).then(categories => {
-        categories.map(category => {
-            category.getSuccessRatio();
-        })
+    Category.findOne({ name: categoryName }).then(category => {
+        category.updateSuccessRatio();
     })
 }

@@ -6,8 +6,8 @@
       <h2>Try out our different quizz modes</h2>
       <h4>Choose a mode below</h4>
     </div>
-    <div id="content">
-      <b-container style="margin: 0px; max-width: 100%">
+    <!-- <div id="content"> -->
+    <b-container style="margin: 0px; max-width: 100%">
       <b-row v-if="!isModeSelected" class="m-auto">
         <ModeSelection
           :categoryName="categoryName"
@@ -16,26 +16,36 @@
       </b-row>
       <b-row v-else-if="!isQuizzStarted">
         <h1>Waiting room</h1>
-        <WaitingRoom :roomCode="roomCode" @start-quizz="handleStartQuizzClick" />
+        <WaitingRoom
+          :roomCode="roomCode"
+          @start-quizz="handleStartQuizzClick"
+          :socket="socket"
+        />
       </b-row>
       <b-row v-else>
-        <QuestionView :roomCode="roomCode" />
+        <QuestionView
+          :roomCode="roomCode"
+          :socket="socket"
+          @update-stats="updateStats"
+        />
       </b-row>
       <b-modal v-model="showAuthInfoModale" ok-only>
         To continue, you must be authenticated
       </b-modal>
     </b-container>
-    </div>
   </div>
+  <!-- </div> -->
 </template>
 <script>
 import ModeSelection from '@/components/quizz/ModeSelection.vue';
 import WaitingRoom from '@/components/quizz/WaitingRoom.vue';
 import QuestionView from '@/components/quizz/QuestionView.vue';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 export default {
   data() {
     return {
+      username: '',
       isModeSelected: false,
       categoryName: '',
       mode: '',
@@ -43,6 +53,7 @@ export default {
       test: true,
       isQuizzStarted: '',
       showAuthInfoModale: false,
+      socket: null,
     };
   },
   components: {
@@ -56,22 +67,75 @@ export default {
   methods: {
     handleModeClick(payload) {
       this.mode = payload.mode;
-      axios
-        .post('/api/room/', {
-          host: localStorage.getItem('userId'),
-          mode: this.mode,
-          category: this.categoryName,
-          difficulty: payload.difficulty,
-        })
-        .then((response) => {
-          this.roomCode = response.data.roomCode;
-          console.log(this.roomCode);
+      if (this.mode == 'Join') {
+        const roomCode = payload.roomcode;
+        console.log(payload);
+
+        axios.get(`/api/room/${roomCode}`).then(() => {
+          this.roomCode = roomCode;
           this.isModeSelected = true;
-        })
-        .catch(() => (this.showAuthInfoModale = true));
+          this.socket = io({
+            withCredentials: true,
+            extraHeaders: {
+              'my-custom-header': 'abcd',
+            },
+            query: {
+              roomcode: this.roomCode,
+              token: localStorage.getItem('token'),
+            },
+          });
+          this.socket.emit('join-room', { roomcode: this.roomCode });
+        });
+      } else {
+        axios
+          .post('/api/room/', {
+            host: localStorage.getItem('userId'),
+            mode: this.mode,
+            category: this.categoryName,
+            difficulty: payload.difficulty,
+          })
+          .then((response) => {
+            this.roomCode = response.data.roomCode;
+            console.log(this.roomCode);
+            this.isModeSelected = true;
+            this.socket = io({
+              withCredentials: true,
+              extraHeaders: {
+                'my-custom-header': 'abcd',
+              },
+              query: {
+                roomcode: this.roomCode,
+                token: localStorage.getItem('token'),
+              },
+            });
+          })
+          .catch(() => (this.showAuthInfoModale = true));
+      }
     },
     handleStartQuizzClick() {
       this.isQuizzStarted = true;
+      this.socket.emit('start', { roomcode: this.roomCode });
+    },
+
+    updateStats(result) {
+      axios.put('/api/stats/' + this.categoryName, {
+        nbGoodAnswers: result.correct,
+        nbBadAnswers: result.wrong,
+      });
+
+      if (result.wrong == 0) {
+        this.quizzWon = 1;
+        this.quizzLost = 0;
+      } else {
+        this.quizzWon = 0;
+        this.quizzLost = 1;
+      }
+      axios.put('/api/stats/user', {
+        category: this.categoryName,
+        nbQuizzWon: this.quizzWon,
+        nbQuizzLost: this.quizzLost,
+        score: result.correct,
+      });
     },
   },
 };
