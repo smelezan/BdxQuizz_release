@@ -123,11 +123,13 @@ export default {
   outline: none;
 
 }
-/* a > a:hover {
-  color: #ffffff;
+a > a{
+  color: #16181b;
+}
+a > a:hover {
   text-decoration: none;
 }
 a > a:active {
   text-decoration: none;
-} */
+}
 </style>
