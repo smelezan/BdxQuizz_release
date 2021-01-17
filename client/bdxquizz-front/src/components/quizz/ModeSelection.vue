@@ -12,9 +12,8 @@
           tag="article"
           style="height: 410px; width: 300px"
         >
-          <b-card-text> </b-card-text>
+          <b-card-text>No timer, no pressure</b-card-text>
           <b-form-group
-            class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -42,9 +41,8 @@
           tag="article"
           style="height: 410px; width: 300px"
         >
-          <b-card-text> </b-card-text>
+          <b-card-text>Do your best</b-card-text>
           <b-form-group
-            class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -64,36 +62,6 @@
       <b-col cols="auto" md="auto" class="mx-auto mb-3">
         <b-card
           class="shadow"
-          title="Defy"
-          :img-src="require('@/assets/modes-images/defy.png')"
-          img-alt="defy"
-          img-height="132"
-          img-width="198"
-          tag="article"
-          style="height: 410px; width: 300px"
-        >
-          <b-card-text> </b-card-text>
-          <b-form-group
-            class="mb-5"
-            id="input-group-3"
-            label="Difficulty:"
-            label-for="input-3"
-          >
-            <b-form-select
-              id="input-3"
-              v-model="form.difficulty"
-              :options="difficulty"
-              required
-            ></b-form-select>
-          </b-form-group>
-          <b-button variant="primary" @click="startQuizz('DEFY')">
-            Start quizz
-          </b-button>
-        </b-card>
-      </b-col>
-      <b-col cols="auto" md="auto" class="mx-auto mb-3">
-        <b-card
-          class="shadow"
           title="Endless"
           :img-src="require('@/assets/modes-images/infinite.png')"
           img-alt="infinite"
@@ -102,9 +70,8 @@
           tag="article"
           style="height: 410px; width: 300px"
         >
-          <b-card-text> </b-card-text>
+          <b-card-text>How long will you last ?</b-card-text>
           <b-form-group
-            class="mb-5"
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
@@ -121,23 +88,27 @@
           </b-button>
         </b-card>
       </b-col>
-      <b-col md="3">
+      <b-col cols="auto" md="auto" class="mx-auto mb-3">
         <b-card
-          title="Join a room"
+          title="Versus"
+          class="shadow"
+          :img-src="require('@/assets/modes-images/defy.png')"
+          img-alt="versus"
+          img-height="132"
+          img-width="198"
           tag="article"
-          style="max-width: 20rem"
-          class="mb-2"
+          style="height: 410px; width: 300px"
         >
-          <b-card-text> </b-card-text>
+          <b-card-text>Join a quizz with your friends</b-card-text>
           <b-form-group
             id="input-group-3"
-            label="RoomCode:"
+            label="Room code:"
             label-for="input-4"
           >
             <b-form-input
               id="input-4"
               type="search"
-              placeholder="Search ..."
+              placeholder="Enter the room code here"
               v-model="searchQuery"
             ></b-form-input>
           </b-form-group>
@@ -146,8 +117,6 @@
           </b-button>
         </b-card>
       </b-col>
-
-      <b-col md="1"></b-col>
     </b-row>
   </b-container>
 </template>

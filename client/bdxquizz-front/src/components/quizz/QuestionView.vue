@@ -2,27 +2,25 @@
   <b-container style="margin: 0px; max-width: 100%">
     <div v-if="!isEnded">
       <b-row class="mt-3">
-        <b-col md="3"></b-col>
-        <b-col md="6">
-          <b-card class="text-center" align="center">
+        <b-col cols="12" md="12">
+          <b-card class="text-center w-75 mx-auto" align="center">
             <b-card-text>{{ question.question }}</b-card-text>
           </b-card>
-          {{ result.correct }} ----- {{ result.wrong }}
+          <span id="true">{{ result.correct }}</span> | <span id="false">{{ result.wrong }}</span>
         </b-col>
-        <b-col md="3"></b-col>
       </b-row>
       <b-row class="mt-3">
-        <b-col md="2"></b-col>
-        <b-col md="8">
+        <b-col cols="12" md="12">
           <b-row>
             <b-col
+              cols="auto"
               md="6"
-              class="mt-3"
+              class="w-75 mx-auto mt-3"
               v-for="(proposition, index) in question.propositions"
               :key="proposition"
               @click="handleClick(index)"
             >
-              <b-card
+              <b-card class="response"
                 :border-variant="propositionsCards[index].border_variant"
                 :header-border-variant="
                   propositionsCards[index].header_border_variant
@@ -38,28 +36,24 @@
             </b-col>
           </b-row>
         </b-col>
-        <b-col md="2"></b-col>
       </b-row>
     </div>
     <div v-else>
       <b-row>
-        <b-col md="3"></b-col>
-        <b-col md="6" class="text-center" align="center"
-          ><b-row class="text-center" align="center">
-            <h2>Nice, it's over</h2>
-          </b-row>
-          <b-row class="text-center" align="center">
-            <h2>
-              Your score: {{ result.correct }}/
-              {{ result.correct + result.wrong }}
-            </h2>
-          </b-row></b-col
-        >
-        <b-col md="3"></b-col>
+        <b-col cols="12" md="12" class="text-center" align="center">
+          <h2>The quizz is over</h2>
+          <h4>We hope you had fun</h4>
+          <br />
+          <h2>
+            You scored: {{ result.correct }}/
+            {{ result.correct + result.wrong }}
+          </h2>
+        </b-col>
       </b-row>
     </div>
   </b-container>
 </template>
+
 <script>
 import axios from 'axios';
 export default {
@@ -155,3 +149,29 @@ export default {
   },
 };
 </script>
+
+<style>
+.response{
+  border-width: 2px;
+}
+
+#true::before{
+  content: '';
+  position: absolute;
+  border-color: #198754;
+  border-style: solid;
+  border-width: 0 0.3em 0.25em 0;
+  height: 1em;
+  transform: translate(-20px,18px) rotate(45deg);
+  margin-top: -1em;
+  width: 0.5em;
+}
+#false::after{
+  content: 'X';
+  font-weight: bolder;
+  font-size: 120%;
+  position: absolute;
+  color: #dc3545;
+  transform: translate(6px,-2px);
+}
+</style>
