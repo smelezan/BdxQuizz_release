@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const common = require("../utils/common");
+const common = require('../utils/common');
 
 exports.getUser = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
@@ -15,12 +15,12 @@ exports.getUser = (req, res) => {
         return res.status(401).json({
           title: 'unauthorized',
         });
-        return res.status(200).json({
-          title: 'user grabbed',
-          user: {
-            username: user.username,
-          },
-        });
+      return res.status(200).json({
+        title: 'user grabbed',
+        user: {
+          username: user.username,
+        },
+      });
     });
   });
 };
@@ -37,12 +37,12 @@ exports.getStats = (req, res) => {
         return res.status(401).json({
           title: 'unauthorized',
         });
-        return res.status(200).json({
-          title: 'user stats',
-          user: {
-            stats: user.stats,
-          },
-        });
+      return res.status(200).json({
+        title: 'user stats',
+        user: {
+          stats: user.stats,
+        },
+      });
     });
   });
 };

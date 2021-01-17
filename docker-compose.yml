@@ -13,6 +13,7 @@ services:
       - backend
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - BACK_ADDRESS=backend
     volumes:
       - ./client/bdxquizz-front/src:/app/src
 
