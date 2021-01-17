@@ -37,6 +37,13 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/QuizzRoom.vue'),
   },
+  {
+    path: '/user/profile',
+    name: 'Profile',
+
+    component: () =>
+      import('../views/Profile.vue'),
+  },
 ];
 
 const router = new VueRouter({
