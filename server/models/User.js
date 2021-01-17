@@ -52,11 +52,11 @@ const User = mongoose.Schema({
     },
     bestTime: {
       type: String,
-      required: true
+      default: ''
     },
     averageTime: {
       type: String,
-      required: true
+      default: ''
     },
     category: {
       type: Object,
