@@ -51,6 +51,7 @@ export default {
     return {
       allCategories: [],
       searchQuery: null,
+      roomcode: '',
     };
   },
   created() {
@@ -58,6 +59,9 @@ export default {
       console.log(res.data);
       this.allCategories = res.data.categories;
     });
+  },
+  methods: {
+    handleJoinRoomClick() {},
   },
   computed: {
     resultQuery() {

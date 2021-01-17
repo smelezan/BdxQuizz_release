@@ -3,7 +3,6 @@
     <h1>{{ categoryName }}</h1>
     <h2>Select your mode</h2>
     <b-row>
-      <b-col md="2"></b-col>
       <b-col md="3">
         <b-card title="Zen" tag="article" style="max-width: 20rem" class="mb-2">
           <b-card-text> </b-card-text>
@@ -74,6 +73,31 @@
           </b-button>
         </b-card>
       </b-col>
+      <b-col md="3">
+        <b-card
+          title="Join a room"
+          tag="article"
+          style="max-width: 20rem"
+          class="mb-2"
+        >
+          <b-card-text> </b-card-text>
+          <b-form-group
+            id="input-group-3"
+            label="RoomCode:"
+            label-for="input-4"
+          >
+            <b-form-input
+              id="input-4"
+              type="search"
+              placeholder="Search ..."
+              v-model="searchQuery"
+            ></b-form-input>
+          </b-form-group>
+          <b-button variant="primary" @click="startQuizz('Join')">
+            Start quizz
+          </b-button>
+        </b-card>
+      </b-col>
 
       <b-col md="1"></b-col>
     </b-row>
@@ -87,6 +111,7 @@ export default {
   },
   data() {
     return {
+      searchQuery: '',
       form: {
         difficulty: 'easy',
       },
@@ -95,7 +120,11 @@ export default {
   },
   methods: {
     startQuizz(mode) {
-      this.$emit('mode-chosen', { mode, difficulty: this.form.difficulty });
+      this.$emit('mode-chosen', {
+        mode,
+        difficulty: this.form.difficulty,
+        roomcode: this.searchQuery,
+      });
     },
   },
 };

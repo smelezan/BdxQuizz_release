@@ -22,6 +22,7 @@ const categoriesRoute = require('./server/routes/categories');
 const authRoute = require('./server/routes/auth');
 const userRoute = require('./server/routes/user');
 const roomRoute = require('./server/routes/room');
+const roomCtrl = require('./server/controllers/room');
 
 const PORT = process.env.PORT || 4000;
 console.log(config.DB);
@@ -50,14 +51,31 @@ app.use((req, res, next) => {
   next();
 });
 
+const ws = require('./ws');
+const tokenManagement = require('./server/utils/tokenManagement');
+
 http.listen(PORT);
 // socket io
-io.on('connection', (socket) => {
-  console.log('User connected');
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
+io.use(async (socket, next) => {
+  const { roomcode, token } = socket.handshake.query;
+  if (ws.has(roomcode)) {
+    const roomCodeInfos = ws.get(roomcode);
+    const id = await tokenManagement.extractIdFromToken(token);
+    roomCodeInfos.players.set(socket, { id, ready: false });
+
+    ws.set(roomcode, { ...roomCodeInfos });
+  } else {
+    const map = new Map();
+    const id = await tokenManagement.extractIdFromToken(token);
+    map.set(socket, { id, ready: false });
+    ws.set(roomcode, {
+      players: map,
+    });
+  }
+  return next();
 });
+
+io.on('connection', roomCtrl.respond);
 app.use(history({ index: 'index.html' }));
 
 app.use(express.static('./client/bdxquizz-front/dist'));
