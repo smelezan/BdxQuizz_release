@@ -22,7 +22,6 @@ exports.getUserStats = (req, res) => {
     });
 }
 
-
 exports.getStatsByCategory = (req, res) => {
     categoryId = req.params.id;
     Category.findOne({ categoryId }).then(categorie => {
