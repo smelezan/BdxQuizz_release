@@ -3,6 +3,11 @@
     <div v-if="!isEnded">
       <b-row class="mt-3">
         <b-col cols="12" md="12">
+          <div class="text-center mx-auto"><h4 ref="chrono">00:0</h4></div>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col cols="12" md="12">
           <b-card class="text-center w-75 mx-auto" align="center">
             <b-card-text>{{ question.question }}</b-card-text>
           </b-card>
@@ -74,6 +79,11 @@ export default {
         wrong: 0,
       },
       isEnded: false,
+      nbQuestion: 0,
+      start: 0,
+      end: 0,
+      diff: 0,
+      timerID: 0,
     };
   },
   created() {
@@ -89,6 +99,7 @@ export default {
 
       this.isDisabled = true;
     });
+    setTimeout(this.chronoStart, 1000);
     //this.getNextQuestion();
   },
   methods: {
@@ -126,7 +137,8 @@ export default {
     handleClick(index) {
       if (this.isDisabled) return;
       this.currentAnswer = this.question.propositions[index];
-
+      this.chronoPause(2000);
+      this.nbQuestion++;
       console.log(this.currentAnswer);
       this.socket.emit('answer', {
         roomcode: this.roomCode,
@@ -153,6 +165,30 @@ export default {
       this.propositionsCards[indexAnswer]['header_border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['header_text_variant'] = 'success';
+    },
+    chrono() {
+      this.end = new Date();
+      this.diff = new Date(this.end - this.start);
+      this.$refs.chrono.innerText = this.getTimer();
+      this.timerID = setTimeout(this.chrono, 1000);
+    },
+    getTimer() {
+      let minutes = this.diff.getMinutes();
+      let seconds = this.diff.getSeconds();
+      if (minutes < 10) minutes = '0' + minutes;
+      if (seconds < 10) seconds = '0' + seconds;
+      return minutes + ':' + (seconds - 2 * this.nbQuestion);
+    },
+    chronoStart() {
+      this.start = new Date();
+      this.chrono();
+    },
+    chronoPause(time) {
+      clearTimeout(this.timerID);
+      this.timerID = setTimeout(this.chrono, time);
+    },
+    chronoStop() {
+      clearTimeout(this.timerID);
     },
   },
 };

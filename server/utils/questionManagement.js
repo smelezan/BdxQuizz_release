@@ -1,3 +1,20 @@
+const axios = require('axios');
+const he = require('he');
+const Category = require('../models/Category');
+
+const url = (nbQuestions, category, difficulty) =>
+  `https://opentdb.com/api.php?amount=${nbQuestions}&category=${category}&difficulty=${difficulty}`;
+
+const regex = new RegExp('(.+\\s*)(:\\s*)(.+)');
+
+const parseCategoryName = (categoryName) => categoryName.replace(regex, '$3');
+
+const parseCategories = (questions) => {
+  for (let i = 0; i < questions.size; i += 1) {
+    questions[i].category = parseCategoryName(questions[i].category);
+  }
+  return questions;
+};
 function shuffle(array) {
   let counter = array.length;
 
@@ -30,6 +47,40 @@ const parseQuestion = (question) => {
   return result;
 };
 
+const getQuestions = async (
+  numberOfQuestions = 10,
+  category = 0,
+  difficulty = 'medium'
+) => {
+  const categoryResponse = await Category.findOne({ name: category });
+  if (difficulty === 'any') {
+    difficulty = '';
+  }
+  console.log(url(numberOfQuestions, categoryResponse.categoryId, difficulty));
+  const response = await axios.get(
+    url(numberOfQuestions, categoryResponse.categoryId, difficulty)
+  );
+  let questions = response.data.results;
+  questions = parseCategories(questions);
+  const decodedQuestions = questions.map((question) => {
+    const result = { ...question };
+    result.question = he.decode(result.question);
+    result.correct_answer = he.decode(result.correct_answer);
+    result.incorrect_answers = result.incorrect_answers.map((answer) =>
+      he.decode(answer)
+    );
+    return result;
+  });
+  return decodedQuestions;
+};
+const getNextQuestionEndless = (params) =>
+  new Promise((resolve) => {
+    getQuestions(10, params.category, params.difficulty).then((questions) =>
+      resolve(questions)
+    );
+  });
 module.exports = {
   parseQuestion,
+  getNextQuestionEndless,
+  getQuestions,
 };

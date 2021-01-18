@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const roomManagement = require('../utils/roomManagement');
+const questionManagement = require('../utils/questionManagement');
 
 const Room = mongoose.Schema({
   mode: {
@@ -73,12 +73,18 @@ Room.methods.getNextQuestion = async function getNextQuestion(isFirst) {
       if (this.currentNoQuestion + 1 >= this.nbQuestions) {
         return undefined;
       }
-      if (this.currentNoQuestion + 5 === this.nbQuestions) {
-        const questions = await roomManagement.getNextQuestionEndless({
-          category: this.category,
-          difficulty: this.difficulty,
-        });
-        this.questions.push(questions);
+      if (this.currentNoQuestion) {
+        // (this.currentNoQuestion + 5 === this.nbQuestions)
+        try {
+          const questions = await questionManagement.getNextQuestionEndless({
+            category: this.category,
+            difficulty: this.difficulty,
+          });
+          this.questions.push(...questions);
+          this.nbQuestions += 1;
+        } catch (e) {
+          console.log(e);
+        }
       }
       this.currentNoQuestion += 1;
       await this.save();

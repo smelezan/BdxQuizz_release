@@ -72,30 +72,30 @@ exports.acceptFriendRequest = (req, res) => {
   });
 };
 
-exports.sendPlayingInvitation = (req, res) => {
-  const username = req.params.id;
-  const { roomCode } = req.body;
-  const challengerUsername = req.session.username;
-  User.findOne({ username }).then((user) => {
-    user.notifications.games.push({
-      username: challengerUsername,
-      roomCode,
-    });
-    user.save();
-    res.status(200).json({ user });
-  });
-};
+// exports.sendPlayingInvitation = (req, res) => {
+//   const username = req.params.id;
+//   const { roomCode } = req.body;
+//   const challengerUsername = req.session.username;
+//   User.findOne({ username }).then((user) => {
+//     user.notifications.games.push({
+//       username: challengerUsername,
+//       roomCode,
+//     });
+//     user.save();
+//     res.status(200).json({ user });
+//   });
+// };
 
-exports.cancelPlayingInvitation = (req, res) => {
-  const username = req.params.id;
-  const challengerUsername = req.session.username;
-  User.findOne({ username }).then((user) => {
-    const remainingGames = common.arrayRemove(
-      user.notifications.games,
-      challengerUsername
-    );
-    user.notifications.games = remainingGames;
-    user.save();
-    res.status(200).json({ remainingGames });
-  });
-};
+// exports.cancelPlayingInvitation = (req, res) => {
+//   const username = req.params.id;
+//   const challengerUsername = req.session.username;
+//   User.findOne({ username }).then((user) => {
+//     const remainingGames = common.arrayRemove(
+//       user.notifications.games,
+//       challengerUsername
+//     );
+//     user.notifications.games = remainingGames;
+//     user.save();
+//     res.status(200).json({ remainingGames });
+//   });
+// };
