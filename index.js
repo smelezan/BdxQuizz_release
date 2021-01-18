@@ -91,3 +91,5 @@ app.use('/api/auth/', authRoute);
 app.use('/api/user/', userRoute);
 app.use('/api/room/', roomRoute);
 app.use('/api/stats/', statsRoute);
+
+module.exports = app;

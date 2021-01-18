@@ -6,7 +6,8 @@
           <b-card class="text-center w-75 mx-auto" align="center">
             <b-card-text>{{ question.question }}</b-card-text>
           </b-card>
-          <span id="true">{{ result.correct }}</span> | <span id="false">{{ result.wrong }}</span>
+          <span id="true">{{ result.correct }}</span> |
+          <span id="false">{{ result.wrong }}</span>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -20,7 +21,8 @@
               :key="proposition"
               @click="handleClick(index)"
             >
-              <b-card class="response"
+              <b-card
+                class="response"
                 :border-variant="propositionsCards[index].border_variant"
                 :header-border-variant="
                   propositionsCards[index].header_border_variant
@@ -63,6 +65,7 @@ export default {
   },
   data() {
     return {
+      isDisabled: true,
       question: {},
       propositionsCards: [],
       currentAnswer: '',
@@ -75,6 +78,7 @@ export default {
   },
   created() {
     this.socket.on('question', (params) => {
+      this.isDisabled = false;
       console.log(params);
       this.displayQuestion(params);
     });
@@ -82,6 +86,8 @@ export default {
       console.log(params);
       this.showAnswer(params.correctAnswer, this.currentAnswer);
       this.currentAnswer = '';
+
+      this.isDisabled = true;
     });
     //this.getNextQuestion();
   },
@@ -118,6 +124,7 @@ export default {
       }
     },
     handleClick(index) {
+      if (this.isDisabled) return;
       this.currentAnswer = this.question.propositions[index];
 
       console.log(this.currentAnswer);
@@ -125,6 +132,7 @@ export default {
         roomcode: this.roomCode,
         answer: this.currentAnswer,
       });
+      this.isDisabled = true;
     },
     showAnswer(answer, propsitionSelected) {
       const propositions = this.question.propositions;
@@ -151,27 +159,27 @@ export default {
 </script>
 
 <style>
-.response{
+.response {
   border-width: 2px;
 }
 
-#true::before{
+#true::before {
   content: '';
   position: absolute;
   border-color: #198754;
   border-style: solid;
   border-width: 0 0.3em 0.25em 0;
   height: 1em;
-  transform: translate(-20px,18px) rotate(45deg);
+  transform: translate(-20px, 18px) rotate(45deg);
   margin-top: -1em;
   width: 0.5em;
 }
-#false::after{
+#false::after {
   content: 'X';
   font-weight: bolder;
   font-size: 120%;
   position: absolute;
   color: #dc3545;
-  transform: translate(6px,-2px);
+  transform: translate(6px, -2px);
 }
 </style>

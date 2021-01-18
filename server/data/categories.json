@@ -16,10 +16,6 @@
         "name": "Music"
     },
     {
-        "categoryId": 13,
-        "name": "Musicals & Theatres"
-    },
-    {
         "categoryId": 14,
         "name": "Television"
     },
@@ -64,10 +60,6 @@
         "name": "Politics"
     },
     {
-        "categoryId": 25,
-        "name": "Art"
-    },
-    {
         "categoryId": 26,
         "name": "Celebrities"
     },
@@ -82,10 +74,6 @@
     {
         "categoryId": 29,
         "name": "Comics"
-    },
-    {
-        "categoryId": 30,
-        "name": "Gadgets"
     },
     {
         "categoryId": 31,

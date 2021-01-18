@@ -27,6 +27,7 @@ const getQuestions = async (
   if (difficulty === 'any') {
     difficulty = '';
   }
+  console.log(url(numberOfQuestions, categoryResponse.categoryId, difficulty));
   const response = await axios.get(
     url(numberOfQuestions, categoryResponse.categoryId, difficulty)
   );
