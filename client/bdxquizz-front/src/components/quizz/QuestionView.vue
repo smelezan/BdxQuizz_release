@@ -3,7 +3,7 @@
     <div v-if="!isEnded">
       <b-row class="mt-3">
         <b-col cols="12" md="12">
-          <div class="text-center mx-auto"><h4 ref="chrono"></h4></div>
+          <div class="text-center mx-auto"><h4 ref="chrono">00:0</h4></div>
         </b-col>
       </b-row>
       <b-row class="mt-3">
