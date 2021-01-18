@@ -37,10 +37,6 @@ const User = mongoose.Schema({
       type: Number,
       default: 0
     },
-    successRatio: {
-      type: Number,
-      default: 0,
-    },
     bestScore: {
       type: Number,
       default: -1
@@ -63,15 +59,6 @@ const User = mongoose.Schema({
   }
 
 }, { strict: false })
-
-User.methods.updateSuccessRatio = async function updateSuccessRatio() {
-  if (this.stats.nbQuizzWon + this.stats.nbQuizzLost > 0)
-    this.stats.successRatio =
-      (this.stats.nbQuizzWon /
-        (this.stats.nbQuizzWon + this.stats.nbQuizzLost)) *
-      100;
-  await this.save();
-};
 
 User.methods.updateNumberOfQuizzPlayed = async function () {
   this.stats.nbQuizzPlayed = (Number)(this.stats.nbQuizzWon + this.stats.nbQuizzLost);

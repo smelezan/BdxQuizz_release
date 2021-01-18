@@ -77,7 +77,6 @@ exports.updateUserStats = async (req, res) => {
                 res.status(200).json({ message: "Updated", result: result });
             })
         User.findById(decoded.userId).then(async user => {
-            await user.updateSuccessRatio();
             await user.updateNumberOfQuizzPlayed();
             await user.updateBestScore(req.body.score);
             user.updateAverageScore(req.body.score);
