@@ -42,7 +42,6 @@ exports.getTopPlayerOfCategory = (req, res) => {
             res.status(400).json({ message: "Category doesn't exist or never played" });
         }
     });
-
 }
 
 exports.getTopPlayer = (req, res) => {
@@ -66,21 +65,44 @@ exports.updateUserStats = async (req, res) => {
                     'stats.nbQuizzLost': req.body.nbQuizzLost,
                     ["stats.category." + categoryName + ".nbQuizzWon"]: req.body.nbQuizzWon,
                     ["stats.category." + categoryName + ".nbQuizzLost"]: req.body.nbQuizzLost,
+                    ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
                 },
-                // '$set': {
-                // 'stats.bestScore': req.body.score,
-                // ["stats.category." + categoryName + ".bestScore"]: req.body.score,
-                // ["stats.category." + categoryName + ".averageScore"]: req.body.averageScore,
-                // }
-
             }, (err, result) => {
-                res.status(200).json({ message: "Updated", result: result });
+                User.findById(decoded.userId).then(async user => {
+                    if (user.stats.category[categoryName].bestScore == undefined) {
+                        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+                            {
+                                '$set': {
+                                    ["stats.category." + categoryName + ".bestScore"]: req.body.score,
+                                    ["stats.category." + categoryName + ".averageScore"]: req.body.score,
+                                }
+                            }, (err, result) => {
+                                console.log(err);
+                            })
+                    }
+                    else {
+                        this.averageScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + req.body.score) / user.stats.category[categoryName].nbQuizzPlayed;
+                        if (user.stats.category[categoryName].bestScore < req.body.score) {
+                            this.bestScore = req.body.score;
+                        }
+                        else {
+                            this.bestScore = user.stats.category[categoryName].bestScore;
+                        }
+                        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+                            {
+                                '$set': {
+                                    ["stats.category." + categoryName + ".bestScore"]: this.bestScore,
+                                    ["stats.category." + categoryName + ".averageScore"]: this.averageScore,
+                                }
+                            }, (err, result) => {
+                                console.log(err);
+                            })
+                    }
+                    await user.updateNumberOfQuizzPlayed();
+                    await user.updateBestScore(req.body.score);
+                    user.updateAverageScore(req.body.score);
+                })
             })
-        User.findById(decoded.userId).then(async user => {
-            await user.updateNumberOfQuizzPlayed();
-            await user.updateBestScore(req.body.score);
-            user.updateAverageScore(req.body.score);
-        })
     });
 }
 

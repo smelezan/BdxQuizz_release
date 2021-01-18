@@ -80,7 +80,7 @@ User.methods.updateAverageScore = async function (newScore) {
     this.stats.averageScore = this.stats.bestScore;
   }
   else {
-    this.stats.averageScore = (this.stats.averageScore * this.stats.nbQuizzPlayed - 1 + newScore) / this.stats.nbQuizzPlayed;
+    this.stats.averageScore = (this.stats.averageScore * (this.stats.nbQuizzPlayed - 1) + newScore) / this.stats.nbQuizzPlayed;
   }
   await this.save();
 };
