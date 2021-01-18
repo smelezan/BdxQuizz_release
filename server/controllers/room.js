@@ -100,7 +100,11 @@ function disconnectUser(socket) {
   });
   const room = ws.get(currRoomCode);
   console.log(`delete ${room.players.get(socket)} from room: ${currRoomCode}`);
+  room.players.forEach((value, key) => {
+    key.emit('disconnection', { id: room.players.get(socket) });
+  });
   room.players.delete(socket);
+
   if (room.players.size === 0) {
     ws.delete(currRoomCode);
   }

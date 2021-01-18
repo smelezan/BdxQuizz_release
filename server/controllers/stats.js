@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const mongodb = require('mongodb');
 const Category = require('../models/Category');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const mongodb = require('mongodb');
 const { find } = require('../models/User');
 
 exports.getUserStats = (req, res) => {
@@ -87,7 +87,6 @@ exports.updateUserStats = async (req, res) => {
       }
     );
     User.findById(decoded.userId).then(async (user) => {
-      await user.updateSuccessRatio();
       await user.updateNumberOfQuizzPlayed();
       await user.updateBestScore(req.body.score);
       user.updateAverageScore(req.body.score);
