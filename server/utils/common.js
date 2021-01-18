@@ -1,9 +1,7 @@
 function arrayRemove(arr, value) {
-    return arr.filter((element) => {
-        return element.username != value;
-    });
+  return arr.filter((element) => element.username !== value);
 }
 
 module.exports = {
-    arrayRemove,
-}
+  arrayRemove,
+};

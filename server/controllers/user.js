@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const common = require("../utils/common");
+const common = require('../utils/common');
 
 exports.getUser = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];

@@ -88,7 +88,27 @@ exports.getAnswer = (req, res) => {
     });
   });
 };
+function disconnectUser(socket) {
+  let currRoomCode = '';
 
+  ws.forEach((room, roomcode) => {
+    room.players.forEach((player, key) => {
+      if (key === socket) {
+        currRoomCode = roomcode;
+      }
+    });
+  });
+  const room = ws.get(currRoomCode);
+  console.log(`delete ${room.players.get(socket)} from room: ${currRoomCode}`);
+  room.players.forEach((value, key) => {
+    key.emit('disconnection', { id: room.players.get(socket) });
+  });
+  room.players.delete(socket);
+
+  if (room.players.size === 0) {
+    ws.delete(currRoomCode);
+  }
+}
 async function nextQuestion(roomCode, isFirst) {
   const room = await Room.findOne({ roomCode });
   if (room !== undefined) {
@@ -196,28 +216,9 @@ module.exports.respond = (socket) => {
         key.emit('join', { playersUsernames });
       });
     });
-    // const promises = room.players.map(
-    //   (player) =>
-    //     new Promise((resolve, reject) => {
-    //       User.findById(player.id).then((user) => {
-    //         if (user !== undefined) {
-    //           resolve(user.username);
-    //         } else {
-    //           reject();
-    //         }
-    //       });
-    //     })
-    // );
-    // Promise.all(promises).then((usernames) => {
-    //   playersUsernames = usernames;
-
-    //   room.players.forEach((player) => {
-    //     console.log(playersUsernames);
-    //     player.socket.emit('join', { playersUsernames });
-    //   });
-    // });
   });
   socket.on('disconnect', () => {
+    disconnectUser(socket);
     console.log('User disconnected');
   });
 };

@@ -24,8 +24,9 @@ const getQuestions = async (
   difficulty = 'medium'
 ) => {
   const categoryResponse = await Category.findOne({ name: category });
-
-  console.log(url(numberOfQuestions, categoryResponse.categoryId, difficulty));
+  if (difficulty === 'any') {
+    difficulty = '';
+  }
   const response = await axios.get(
     url(numberOfQuestions, categoryResponse.categoryId, difficulty)
   );
