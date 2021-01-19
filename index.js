@@ -77,7 +77,8 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', roomCtrl.respond);
-app.use(history({ index: 'index.html' }));
+if (process.env.NODE_ENV === 'production')
+  app.use(history({ index: 'index.html' }));
 
 app.use(express.static('./client/bdxquizz-front/dist'));
 app.get('/', (req, res) => {
