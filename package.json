@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start-dev": "nodemon -L app",
-    "test": "mocha --recursive ./server/test/*.js "
+    "test": "mocha --recursive ./server/test/*.js --exit "
   },
   "keywords": [],
   "author": "",
