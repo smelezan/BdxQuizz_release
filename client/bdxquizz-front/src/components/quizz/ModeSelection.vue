@@ -148,7 +148,7 @@ export default {
 };
 </script>
 
-<style>
+<style scopped>
 #content > .container{
   padding: 0px;
 }

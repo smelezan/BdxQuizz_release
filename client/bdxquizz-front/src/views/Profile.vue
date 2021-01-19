@@ -3,9 +3,11 @@
     <div id="title" class="profile">
       <h1>Profile</h1>
       <br />
+      <h2>pseudo</h2>
+      <h4>Check out your stats below</h4>
     </div>
-    <div>
-      <b-container id="content" style="margin: 0px; max-width: 100%">
+    <div id="content">
+      <b-container style="margin: 0px; max-width: 100%">
         <b-row>
           <b-col >
             <button class="button" @click="updateChart">Update</button>
