@@ -70,7 +70,7 @@ exports.updateUserEndlessStats = async (req, res) => {
             }, async (err, result) => {
                 User.findById(decoded.userId).then(async user => {
                     await user.updateNumberOfQuizzPlayed();
-                    user.updateBestScore(req.body.score);
+                    user.updateBestEndlessScore(req.body.score);
                 }, (err, result) => { })
             });
 
@@ -134,6 +134,7 @@ exports.updateUserStats = async (req, res) => {
                             })
                     }
                     await user.updateNumberOfQuizzPlayed();
+                    console.log("ICIMEME");
                     await user.updateBestScore(req.body.score, req.body.time);
                     await user.updateAverageTime(req.body.time);
                     user.updateAverageScore(req.body.score);

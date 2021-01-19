@@ -162,6 +162,7 @@ export default {
       if (this.mode == 'ENDLESS') {
         axios.put('/api/stats/user/endless', {
           score: result.correct,
+          category: this.categoryName,
         });
       }
     },
