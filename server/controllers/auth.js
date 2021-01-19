@@ -10,8 +10,11 @@ exports.signup = (req, res) => {
   newUser
     .save()
     .then(() => {
+      const token = jwt.sign({ userId: newUser._id }, 'secret_key');
       res.status(200).json({
         title: 'success',
+        userId: newUser._id,
+        token,
       });
     })
     .catch((err) => {

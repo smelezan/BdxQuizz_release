@@ -37,13 +37,21 @@ exports.createRoom = async (req, res) => {
 };
 
 exports.getRoomByRoomCode = (req, res) => {
-  const { roomCode } = req.body;
+  const roomCode = req.params.roomcode;
 
   Room.findOne({ roomCode }).then((room) => {
-    if (room !== undefined) {
-      res.status(200).json({
-        title: 'success',
-      });
+    if (room) {
+      if (room.mode === 'ENDLESS') {
+        res.status(400).json({
+          title: 'error',
+          message: "Can't join an Endless room",
+        });
+      } else {
+        res.status(200).json({
+          title: 'success',
+          category: room.category,
+        });
+      }
     } else {
       res.status(400).json({
         title: 'error',
@@ -171,11 +179,27 @@ module.exports.respond = (socket) => {
 
   socket.on('answer', async (params) => {
     const answer = await getCurrentAnswer(params.roomcode, params.answer);
-
+    console.log(params);
     updateReadyState(params.roomcode, socket, true);
     let room = ws.get(params.roomcode);
-
-    if (allAreReady(room)) {
+    if (params.mode === 'ZEN') {
+      if (allAreReady(room)) {
+        room.players.forEach((value, key) => {
+          key.emit('answer', answer);
+          value.ready = false;
+        });
+        setTimeout(async () => {
+          const question = await nextQuestion(params.roomcode, false);
+          room = ws.get(params.roomcode);
+          room.players.forEach((value, key) => {
+            key.emit('question', { ...question });
+            value.ready = false;
+          });
+        }, 2000);
+      } else {
+        console.log('Waiting for players');
+      }
+    } else {
       room.players.forEach((value, key) => {
         key.emit('answer', answer);
         value.ready = false;
@@ -188,13 +212,11 @@ module.exports.respond = (socket) => {
           value.ready = false;
         });
       }, 2000);
-    } else {
-      console.log('Waiting for players');
     }
   });
 
   socket.on('join-room', async (params) => {
-    const room = ws.get(params.roomcode);
+    const room = ws.get(params.roomCode);
     let playersUsernames = [];
     const promises = [];
     room.players.forEach((value) => {

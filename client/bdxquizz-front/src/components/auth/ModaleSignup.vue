@@ -26,8 +26,12 @@
       </b-form-invalid-feedback>
     </b-form-group>
 
-    <b-button class="mr-2" @click="handleLogin" variant="primary"> Login </b-button>
-    <b-button class="ml-2" variant="success" @click="handleSignup"> Sign up </b-button>
+    <b-button class="mr-2" @click="handleLogin" variant="primary">
+      Login
+    </b-button>
+    <b-button class="ml-2" variant="success" @click="handleSignup">
+      Sign up
+    </b-button>
   </b-form>
 </template>
 
@@ -54,6 +58,8 @@ export default {
       axios.post('/api/auth/signup', newUser).then(
         (res) => {
           if (res.status === 200) {
+            localStorage.setItem('token', res.data.token);
+            localStorage.setItem('userId', res.data.userId);
             this.$router.go(0);
           } else {
             console.log(res.data);

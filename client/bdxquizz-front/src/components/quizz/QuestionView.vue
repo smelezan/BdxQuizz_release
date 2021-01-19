@@ -67,6 +67,7 @@ export default {
   props: {
     roomCode: String,
     socket: Object,
+    mode: String,
   },
   data() {
     return {
@@ -143,17 +144,22 @@ export default {
       this.socket.emit('answer', {
         roomcode: this.roomCode,
         answer: this.currentAnswer,
+        mode: this.mode,
       });
       this.isDisabled = true;
     },
     showAnswer(answer, propsitionSelected) {
       const propositions = this.question.propositions;
-      const indexProposition = propositions.findIndex(
-        (element) => element === propsitionSelected
-      );
       const indexAnswer = propositions.findIndex(
         (element) => element === answer
       );
+      console.log(propsitionSelected);
+      let indexProposition = indexAnswer;
+      if (propsitionSelected) {
+        indexProposition = propositions.findIndex(
+          (element) => element === propsitionSelected
+        );
+      }
       if (answer === propsitionSelected) this.result.correct += 1;
       else this.result.wrong += 1;
       console.log(indexProposition);

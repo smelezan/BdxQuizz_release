@@ -31,10 +31,11 @@
             :roomCode="roomCode"
             :socket="socket"
             @update-stats="updateStats"
+            :mode="mode"
           />
         </b-row>
         <b-modal v-model="showAuthInfoModale" ok-only>
-          To continue, you must be authenticated
+          {{ errorMessage }}
         </b-modal>
       </b-container>
     </div>
@@ -59,6 +60,7 @@ export default {
       isQuizzStarted: '',
       showAuthInfoModale: false,
       socket: null,
+      errorMessage: 'To continue, you must be authenticated',
     };
   },
   components: {
@@ -76,22 +78,29 @@ export default {
       if (this.mode == 'Join') {
         const roomCode = payload.roomcode;
         console.log(payload);
-
-        axios.get(`/api/room/${roomCode}`).then(() => {
-          this.roomCode = roomCode;
-          this.isModeSelected = true;
-          this.socket = io({
-            withCredentials: true,
-            extraHeaders: {
-              'my-custom-header': 'abcd',
-            },
-            query: {
-              roomcode: this.roomCode,
-              token: localStorage.getItem('token'),
-            },
+        console.log(roomCode);
+        axios
+          .get(`/api/room/${roomCode}`)
+          .then(() => {
+            this.roomCode = roomCode;
+            this.isModeSelected = true;
+            this.socket = io({
+              withCredentials: true,
+              extraHeaders: {
+                'my-custom-header': 'abcd',
+              },
+              query: {
+                roomcode: this.roomCode,
+                token: localStorage.getItem('token'),
+              },
+            });
+            console.log(this.roomCode);
+            this.socket.emit('join-room', { roomCode });
+          })
+          .catch(() => {
+            this.errorMessage = "This room doesn't exist";
+            this.showAuthInfoModale = true;
           });
-          this.socket.emit('join-room', { roomcode: this.roomCode });
-        });
       } else {
         axios
           .post('/api/room/', {
@@ -120,7 +129,7 @@ export default {
     },
     handleStartQuizzClick() {
       this.isQuizzStarted = true;
-      this.socket.emit('start', { roomcode: this.roomCode });
+      this.socket.emit('start', { roomcode: this.roomCode, mode: this.mode });
     },
 
     updateStats(result, timeResult) {
