@@ -1,7 +1,10 @@
 <template>
   <b-container id="quizz" class="w-75 mx-auto shadow">
     <div v-if="!isEnded">
-      <b-row class="mt-3" :style="{visibility: mode === 'STANDARD' ? 'visible' : 'hidden'}">
+      <b-row
+        class="mt-3"
+        :style="{ visibility: mode === 'STANDARD' ? 'visible' : 'hidden' }"
+      >
         <b-col cols="12" md="12">
           <div class="text-center mx-auto"><h4 ref="chrono">00:0</h4></div>
         </b-col>
@@ -16,7 +19,7 @@
         </b-col>
       </b-row>
       <b-row class="w-75 mx-auto">
-        <b-col cols="12" md="12" >
+        <b-col cols="12" md="12">
           <b-row class="my-5">
             <b-col
               cols="auto"
@@ -54,10 +57,19 @@
           <h2>
             <span>You scored:</span>
             <br />
-            <span>{{ result.correct }} /
-            {{ result.correct + result.wrong }}</span>
+            <span
+              >{{ result.correct }} / {{ result.correct + result.wrong }}</span
+            >
           </h2>
+          <b-button @click="handleReturnClick">
+            Return to selection page
+          </b-button>
         </b-col>
+      </b-row>
+      <b-row>
+        <b-col md="2"></b-col>
+        <b-col md="8"><b-table hover :items="finalClassment"></b-table></b-col>
+        <b-col md="2"></b-col>
       </b-row>
     </div>
   </b-container>
@@ -87,6 +99,7 @@ export default {
       end: 0,
       diff: 0,
       timerID: 0,
+      finalClassment: [],
     };
   },
   created() {
@@ -111,9 +124,22 @@ export default {
 
       this.isDisabled = true;
     });
-    //this.getNextQuestion();
+    this.socket.on('end', async (params) => {
+      console.log(params);
+      const response = await axios.get(`/api/user/${params.player}`);
+      const player = response.data;
+      console.log(response.data);
+      this.finalClassment.push({
+        player: player.user.username,
+        results: params.results,
+      });
+      this.finalClassment.sort((a, b) => b.results - a.results);
+    });
   },
   methods: {
+    handleReturnClick() {
+      this.$router.go(0);
+    },
     getNextQuestion() {
       axios
         .put('/api/room/question', { roomCode: this.roomCode })
@@ -136,6 +162,10 @@ export default {
         this.isEnded = true;
         this.chronoStop();
         this.$emit('update-stats', this.result, this.getTimer());
+        this.socket.emit('end', {
+          results: this.result,
+          roomCode: this.roomCode,
+        });
       } else {
         this.propositionsCards = question.propositions.map(() => ({
           header_border_variant: 'secondary',
@@ -188,7 +218,7 @@ export default {
       this.$refs.chrono.innerText = this.getTimer();
       this.timerID = setTimeout(this.chrono, 1000);
     },
-    
+
     getTimer() {
       let minutes = this.diff.getMinutes();
       let seconds = this.diff.getSeconds();
@@ -216,7 +246,7 @@ export default {
 </script>
 
 <style scoped>
-#quizz{
+#quizz {
   border: 1px solid transparent;
   border-radius: 10px;
   background-color: white;

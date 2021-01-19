@@ -25,7 +25,9 @@
               <template #button-content>
                 <em>{{ username }}</em>
               </template>
-              <b-dropdown-item><router-link :to="`/stats/user`">Profile</router-link></b-dropdown-item>
+              <b-dropdown-item @click="handleClickProfile">
+                Profile
+              </b-dropdown-item>
               <b-dropdown-item @click="handleLogout"> Logout </b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
@@ -65,6 +67,9 @@ export default {
     };
   },
   methods: {
+    handleClickProfile() {
+      this.$router.push({ path: '/stats/user' });
+    },
     handleLogout() {
       localStorage.clear();
       this.isLoggedIn = false;
@@ -92,10 +97,10 @@ export default {
 </script>
 
 <style>
-#navbar{
+#navbar {
   background-color: transparent;
 }
-#roads > li > a > a{
+#roads > li > a > a {
   color: white;
   font-size: x-large;
   text-decoration: none;
@@ -103,7 +108,7 @@ export default {
 #roads > li > a > a:after {
   background: none repeat scroll 0 0 transparent;
   bottom: 25%;
-  content: "";
+  content: '';
   display: block;
   height: 2px;
   position: relative;
@@ -115,15 +120,14 @@ export default {
   width: 100%;
   left: 0;
 }
-#logs > div > li > a{
+#logs > div > li > a {
   font-size: large;
   outline: none;
 }
-#logs > div > li{
+#logs > div > li {
   outline: none;
-
 }
-a > a{
+a > a {
   color: #16181b;
 }
 a > a:hover {

@@ -25,6 +25,21 @@ exports.getUser = (req, res) => {
   });
 };
 
+exports.getUserWithoutAuth = (req, res) => {
+  User.findById(req.params.userId, (error, user) => {
+    if (error || !user)
+      return res.status(401).json({
+        title: 'unauthorized',
+      });
+    return res.status(200).json({
+      title: 'user grabbed',
+      user: {
+        username: user.username,
+      },
+    });
+  });
+};
+
 exports.getNotifications = (req, res) => {
   const username = req.params.id;
   User.findOne({ username }).then((user) => {

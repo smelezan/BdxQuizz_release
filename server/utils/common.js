@@ -3,9 +3,14 @@ function arrayRemove(arr, value) {
 }
 
 function addToAverage(user, average, newValue, categoryName) {
-  return (average * (user.stats.category[categoryName].nbQuizzPlayed - 1) + newValue) / user.stats.category[categoryName].nbQuizzPlayed;
+  return (
+    (average * (user.stats.category[categoryName].nbQuizzPlayed - 1) +
+      newValue) /
+    user.stats.category[categoryName].nbQuizzPlayed
+  );
 }
 
 module.exports = {
-  arrayRemove, addToAverage
+  arrayRemove,
+  addToAverage,
 };

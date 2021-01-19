@@ -3,7 +3,9 @@ const userCtrl = require('../controllers/user');
 
 const router = express.Router();
 
+router.get('/:userId', userCtrl.getUserWithoutAuth);
 router.get('/', userCtrl.getUser);
+
 router.get('/notifications/:id', userCtrl.getNotifications);
 router.post('/invite/:id', userCtrl.sendFriendRequest);
 router.post('/cancel/:id', userCtrl.cancelFriendRequest);
