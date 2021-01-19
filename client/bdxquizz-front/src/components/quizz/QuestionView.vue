@@ -47,7 +47,7 @@
     </div>
     <div v-else>
       <b-row>
-        <b-col cols="12" md="12" class="text-center" align="center">
+        <b-col cols="12" md="12" class="text-center my-3" align="center">
           <h2>The quizz is over</h2>
           <h4>We hope you had fun</h4>
           <br />
@@ -222,7 +222,6 @@ export default {
   background-color: white;
   transform: translateY(-200px);
 }
-
 
 .response {
   border-width: 2px;
