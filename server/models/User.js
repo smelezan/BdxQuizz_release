@@ -38,6 +38,10 @@ const User = mongoose.Schema(
         type: Number,
         default: 0,
       },
+      bestEndlessScore: {
+        type: Number,
+        default: -1,
+      },
       bestScore: {
         type: Number,
         default: -1,
@@ -77,8 +81,9 @@ User.methods.updateBestScore = async function (newScore, newTime) {
     this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
   } else if (newScore == this.stats.bestScore) {
-    let oldTime = this.stats.bestTime.split[":"];
-    let splitNewTime = newTime.split[":"];
+    let oldTime = this.stats.bestTime.split(":");
+    console.log("NEW TIME" + newTime);
+    let splitNewTime = newTime.split(":");
     if (splitNewTime[0] < oldTime[0]) {
       this.stats.bestTime = newTime;
     }
@@ -87,6 +92,15 @@ User.methods.updateBestScore = async function (newScore, newTime) {
         this.stats.bestTime = newTime;
       }
     }
+  }
+  await this.save();
+};
+
+User.methods.updateBestScore = async function (newScore) {
+  if (this.stats.bestScore === -1) {
+    this.stats.bestEndlessScore = newScore;
+  } else if (newScore > this.stats.bestEndlessScore) {
+    this.stats.bestEndlessScore = newScore;
   }
   await this.save();
 };

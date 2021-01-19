@@ -71,6 +71,7 @@ export default {
   created() {
     this.categoryName = this.$route.params.name;
   },
+  mounted() {},
 
   methods: {
     handleModeClick(payload) {
@@ -133,26 +134,33 @@ export default {
     },
 
     updateStats(result, timeResult) {
-      // console.log('TEMPS' + time);
+      console.log('MODE' + this.mode);
       axios.put('/api/stats/' + this.categoryName, {
         nbGoodAnswers: result.correct,
         nbBadAnswers: result.wrong,
       });
 
-      if (result.wrong == 0) {
+      if (result.wrong < 5) {
         this.quizzWon = 1;
         this.quizzLost = 0;
       } else {
         this.quizzWon = 0;
         this.quizzLost = 1;
       }
-      axios.put('/api/stats/user', {
-        category: this.categoryName,
-        nbQuizzWon: this.quizzWon,
-        nbQuizzLost: this.quizzLost,
-        score: result.correct,
-        time: timeResult,
-      });
+      if (this.mode == 'STANDARD') {
+        axios.put('/api/stats/user', {
+          category: this.categoryName,
+          nbQuizzWon: this.quizzWon,
+          nbQuizzLost: this.quizzLost,
+          score: result.correct,
+          time: timeResult,
+        });
+      }
+      if (this.mode == 'ENDLESS') {
+        axios.put('/api/stats/user/endless', {
+          score: result.correct,
+        });
+      }
     },
   },
 };
