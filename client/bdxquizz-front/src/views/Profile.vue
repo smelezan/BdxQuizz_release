@@ -1,56 +1,59 @@
 <template>
-  <div>
-    <div id="title" class="profile">
-      <h1>Profile</h1>
-      <br />
-    </div>
     <div>
-      <b-container id="content" style="margin: 0px; max-width: 100%">
-        <b-row>
-          <b-col >
-            <button class="button" @click="updateChart">Update</button>
-          </b-col>
-        </b-row>
-        <b-row class="d-flex align-items-center mx-auto my-5">
-            <b-col cols="12" md="6">
-              Quizz Played : {{nbQuizzPlayed}} <br />
-              Quizz Won : {{nbQuizzWon}} <br />
-              Quizz Lost : {{nbQuizzLost}} <br />
-              Quizz Ratio : {{nbQuizzWon/nbQuizzPlayed}}
-          </b-col>
-          <b-col cols="12" md="6">
-            <PieChart ref="quizz_chart" :chartdata="quizzData"></PieChart>
-          </b-col>
-        </b-row>
-        <b-row class="mx-auto my-3">
-          <b-col cols="6" md="6">
-            Best Score : {{bestScore}}
-          </b-col>
-          <b-col cols="6" md="6">
-            Average Score : {{averageScore}}
-          </b-col>
-        </b-row>
-        <b-row class="mx-auto mb-5">
-          <b-col cols="12" md="12">
-            <LineChart ref="score_chart" :chartdata="scoreData"></LineChart>
-          </b-col>
-        </b-row>
-        <b-row class="mx-auto my-3">
-          <b-col cols="6" md="6">
-            Best Time : {{bestTime}}
-          </b-col>
-          <b-col cols="6" md="6">
-            Average Time : {{averageTime}}
-          </b-col>
-        </b-row>
-        <b-row class="mx-auto mb-5">
-          <b-col cols="12" md="12">
-            <LineChart ref="time_chart" :chartdata="timeData"></LineChart>
-          </b-col>
-        </b-row>
-      </b-container>
+        <div id="title" class="profile">
+            <h1>Profile</h1>
+            <br />
+        </div>
+        <div>
+            <b-container id="content" style="margin: 0px; max-width: 100%">
+                <b-container id="stats" class="w-75 mx-auto shadow">
+                    <b-row class="p-2">
+                        <b-col >
+                            <h1>Profile</h1>
+                        </b-col>
+                    </b-row>
+                    <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow">
+                        <b-col>
+                            <strong>Pseudo :</strong> {{name}} <br />
+                        </b-col>
+                    </b-row>
+                    <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow">
+                        <b-col>
+                            <strong>Quizz Played :</strong> {{nbQuizzPlayed}} <br />
+                            <strong>Quizz Won :</strong> {{nbQuizzWon}} <br />
+                            <strong>Quizz Lost :</strong> {{nbQuizzLost}} <br />
+                            <strong>Quizz Ratio :</strong> {{nbQuizzWon/nbQuizzPlayed}}
+                        </b-col>
+                        <b-col>
+                            <PieChart v-if="loaded" ref="quizz_chart" :chartdata="quizzData"></PieChart>
+                        </b-col>
+                    </b-row>
+                    <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow">
+                        <b-col cols="6" md="5" class='m-2'>
+                            <strong>Best Score :</strong> {{bestScore}}
+                        </b-col>
+                        <b-col cols="6" md="5" class='m-2'>
+                            <strong>Average Score :</strong> {{averageScore}}
+                        </b-col>
+                        <b-col cols="12" md="12" class='m-2'>
+                            <LineChart v-if="loaded" ref="score_chart" :chartdata="scoreData"></LineChart>
+                        </b-col>
+                    </b-row>
+                    <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow">
+                        <b-col cols="6" md="5" class='m-2'>
+                            <strong>Best Time :</strong> {{bestTime}}
+                        </b-col>
+                        <b-col cols="6" md="5" class='m-2'>
+                            <strong>Average Time :</strong> {{averageTime}}
+                        </b-col>
+                        <b-col cols="12" md="12">
+                            <LineChart v-if="loaded" ref="time_chart" :chartdata="timeData"></LineChart>
+                        </b-col>
+                    </b-row>
+                </b-container>
+            </b-container>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -66,6 +69,8 @@ import LineChart from '@/components/LineChart';
     },
     data() {
         return {
+            loaded: false,
+            name: "username",
             nbQuizzWon: 0,
             nbQuizzLost: 0,
             nbQuizzPlayed: 0,
@@ -80,17 +85,20 @@ import LineChart from '@/components/LineChart';
     },
     mounted() {
         axios.get('/api/stats/user').then((res) => {
-            this.nbQuizzWon = res.data.nbQuizzWon;
-            this.nbQuizzLost = res.data.nbQuizzLost;
-            this.nbQuizzPlayed = res.data.nbQuizzPlayed;
-            this.bestScore = res.data.bestScore;
-            this.averageScore = res.data.averageScore;
-            this.bestTime = res.data.bestTime;
-            this.averageTime = res.data.averageTime;
+            console.log(res.data);
+                
+            this.name = res.data.username;
 
-            const scores = res.data.scores;
-            const times = res.data.times;
-            console.log(times);
+            this.nbQuizzWon = res.data.stats.nbQuizzWon;
+            this.nbQuizzLost = res.data.stats.nbQuizzLost;
+            this.nbQuizzPlayed = res.data.stats.nbQuizzPlayed;
+            this.bestScore = res.data.stats.bestScore;
+            this.averageScore = res.data.stats.averageScore;
+            this.bestTime = res.data.stats.bestTime;
+            this.averageTime = res.data.stats.averageTime;
+
+            const scores = res.data.stats.scores;
+            const times = res.data.stats.times;
 
             let labels = [];
             for(let index = 0; index < scores.length; index++)
@@ -99,14 +107,14 @@ import LineChart from '@/components/LineChart';
             this.quizzData = {
                 labels: ["Win", 'Lose'],
                 datasets: [{
-                    backgroundColor: ["#AA0055", "#00D8FF"],
+                    backgroundColor: ["#00D8FF", "#AA0055"],
                     data: [this.nbQuizzWon, this.nbQuizzLost]
                 }]
             }
             this.scoreData = {
                 labels: labels,
                 datasets: [{
-					lineTension: 0,
+                    label: "Score",
                     backgroundColor: "#00D8FF",
                     data: scores
                 }]
@@ -114,26 +122,25 @@ import LineChart from '@/components/LineChart';
             this.timeData = {
                 labels: labels,
                 datasets: [{
-					lineTension: 0,
+                    label: "Time",
                     backgroundColor: "#00D8FF",
                     data: times
                 }]
             }
-            this.updateChart();
+            this.loaded = true;
         });
-    },
-    methods: {
-        updateChart () {
-            console.log(this.scoreData);
-            this.$refs.quizz_chart.update();
-            this.$refs.score_chart.update();
-            this.$refs.time_chart.update();
-        },
     }
 };
 </script>
 
-<style>
+<style scoped>
+#stats{
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background-color: white;
+  transform: translateY(-200px);
+}
+
 #content:before{
   height: 2000px;
 }

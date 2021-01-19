@@ -19,7 +19,7 @@ exports.getUserStats = (req, res) => {
                 return res.status(401).json({
                     title: 'unauthorized',
                 });
-            return res.status(200).json(user.stats);
+            return res.status(200).json(user);
         });
     });
 }
@@ -53,7 +53,6 @@ exports.getTopPlayer = (req, res) => {
 }
 
 exports.updateUserEndlessStats = async (req, res) => {
-    console.log("TIME" + req.body.time);
     const token = req.headers.authorization.split(' ')[1];
     jwt.verify(token, 'secret_key', (err, decoded) => {
         if (err)
@@ -77,7 +76,6 @@ exports.updateUserEndlessStats = async (req, res) => {
     });
 }
 exports.updateUserStats = async (req, res) => {
-    console.log("TIME" + req.body.time);
     const token = req.headers.authorization.split(' ')[1];
     jwt.verify(token, 'secret_key', (err, decoded) => {
         if (err)
@@ -134,7 +132,6 @@ exports.updateUserStats = async (req, res) => {
                             })
                     }
                     await user.updateNumberOfQuizzPlayed();
-                    console.log("ICIMEME");
                     await user.updateBestScore(req.body.score, req.body.time);
                     await user.updateAverageTime(req.body.time);
                     user.updateAverageScore(req.body.score);

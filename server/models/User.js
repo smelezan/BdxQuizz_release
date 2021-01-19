@@ -68,8 +68,10 @@ User.methods.updateNumberOfQuizzPlayed = async function () {
 };
 
 User.methods.updateBestScore = async function (newScore, newTime) {
-  console.log("PUSH" + newScore);
   this.stats.scores.push(newScore);
+
+  let splitNewTime = newTime.split(":");
+  this.stats.times.push(splitNewTime[0] * 60 + splitNewTime[1]);
   if (this.stats.bestScore === -1) {
     this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
@@ -78,9 +80,6 @@ User.methods.updateBestScore = async function (newScore, newTime) {
     this.stats.bestScore = newScore;
   } else if (newScore == this.stats.bestScore) {
     let oldTime = this.stats.bestTime.split(":");
-    console.log("NEW TIME" + newTime);
-    let splitNewTime = newTime.split(":");
-    this.stats.times.push(splitNewTime[0] * 60 + splitNewTime[1]);
     if (splitNewTime[0] < oldTime[0]) {
       this.stats.bestTime = newTime;
     }
@@ -103,28 +102,31 @@ User.methods.updateBestEndlessScore = async function (newScore) {
 };
 
 User.methods.updateAverageScore = async function (newScore) {
-  if (this.stats.averageScore === -1) {
-    this.stats.averageScore = this.stats.bestScore;
+  let averageScore = this.stats.averageScore;
+  if (averageScore === -1) {
+    averageScore = this.stats.bestScore;
   } else {
-    this.stats.averageScore = (this.stats.averageScore * (this.stats.nbQuizzPlayed - 1) + newScore) / this.stats.nbQuizzPlayed;
+    averageScore = (averageScore * (this.stats.nbQuizzPlayed - 1) + newScore) / this.stats.nbQuizzPlayed;
   }
+  this.stats.averageScore = averageScore.toFixed(2);
   await this.save();
 }
 
 User.methods.updateAverageTime = async function (newTime) {
-  if (this.stats.averageTime === '') {
-    this.stats.averageTime = this.stats.bestTime;
-  }
-  else {
+  let averageTime = this.stats.averageTime;
+  if (averageTime === '') {
+    averageTime = this.stats.bestTime;
+  }else{
     let splitNewTime = newTime.split(":");
-    let splitOldAverageTime = this.stats.averageTime.split(":");
+    let splitOldAverageTime = averageTime.split(":");
 
     let averageMin = (parseInt(splitOldAverageTime[0]) * (this.stats.nbQuizzPlayed - 1) + parseInt(splitNewTime[0])) / this.stats.nbQuizzPlayed;
     let averageSeconde = (parseInt(splitOldAverageTime[1]) * (this.stats.nbQuizzPlayed - 1) + parseInt(splitNewTime[1])) / this.stats.nbQuizzPlayed;
-    this.stats.averageTime = averageMin + ":" + averageSeconde;
+    averageTime = averageMin.toFixed(2) + ":" + averageSeconde.toFixed(2);
   }
+  this.stats.averageTime = averageTime;
   await this.save();
-};;
+};
 
 User.plugin(uniqueValidator);
 module.exports = mongoose.model('User', User);
