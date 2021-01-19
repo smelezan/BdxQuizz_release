@@ -69,6 +69,7 @@ export default {
   created() {
     this.categoryName = this.$route.params.name;
   },
+
   methods: {
     handleModeClick(payload) {
       this.mode = payload.mode;
@@ -122,7 +123,8 @@ export default {
       this.socket.emit('start', { roomcode: this.roomCode });
     },
 
-    updateStats(result) {
+    updateStats(result, timeResult) {
+      // console.log('TEMPS' + time);
       axios.put('/api/stats/' + this.categoryName, {
         nbGoodAnswers: result.correct,
         nbBadAnswers: result.wrong,
@@ -140,6 +142,7 @@ export default {
         nbQuizzWon: this.quizzWon,
         nbQuizzLost: this.quizzLost,
         score: result.correct,
+        time: timeResult,
       });
     },
   },
@@ -147,7 +150,7 @@ export default {
 </script>
 
 <style>
-#content > h1{
+#content > h1 {
   color: black;
 }
 </style>
