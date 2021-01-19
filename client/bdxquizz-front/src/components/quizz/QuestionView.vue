@@ -52,7 +52,7 @@
           <h4>We hope you had fun</h4>
           <br />
           <h2>
-            You scored: {{ result.correct }}/
+            You scored: {{ result.correct }} /
             {{ result.correct + result.wrong }}
           </h2>
         </b-col>
@@ -79,8 +79,8 @@ export default {
         correct: 0,
         wrong: 0,
       },
+      firstQuestion: true,
       isEnded: false,
-      nbQuestion: 0,
       start: 0,
       end: 0,
       diff: 0,
@@ -89,6 +89,10 @@ export default {
   },
   created() {
     this.socket.on('question', (params) => {
+      if (this.firstQuestion){
+        this.firstQuestion = false;
+        setTimeout(this.chronoStart,10);
+      }
       this.isDisabled = false;
       console.log(params);
       this.displayQuestion(params);
@@ -100,7 +104,6 @@ export default {
 
       this.isDisabled = true;
     });
-    setTimeout(this.chronoStart, 1000);
     //this.getNextQuestion();
   },
   methods: {
@@ -124,6 +127,7 @@ export default {
     displayQuestion(question) {
       if (question.message) {
         this.isEnded = true;
+        this.chronoStop();
         this.$emit('update-stats', this.result, this.getTimer());
       } else {
         this.propositionsCards = question.propositions.map(() => ({
@@ -138,8 +142,8 @@ export default {
     handleClick(index) {
       if (this.isDisabled) return;
       this.currentAnswer = this.question.propositions[index];
+      this.start.setSeconds(this.start.getSeconds()+2);
       this.chronoPause(2000);
-      this.nbQuestion++;
       console.log(this.currentAnswer);
       this.socket.emit('answer', {
         roomcode: this.roomCode,
@@ -163,17 +167,16 @@ export default {
       if (answer === propsitionSelected) this.result.correct += 1;
       else this.result.wrong += 1;
       console.log(indexProposition);
-      this.propositionsCards[indexProposition]['header_border_variant'] =
-        'danger';
+      this.propositionsCards[indexProposition]['header_border_variant'] = 'danger';
       this.propositionsCards[indexProposition]['border_variant'] = 'danger';
-      this.propositionsCards[indexProposition]['header_text_variant'] =
-        'danger';
+      this.propositionsCards[indexProposition]['header_text_variant'] = 'danger';
       this.propositionsCards[indexAnswer]['header_border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['header_text_variant'] = 'success';
     },
     chrono() {
       this.end = new Date();
+      console.log(this.start,this.end);
       this.diff = new Date(this.end - this.start);
       this.$refs.chrono.innerText = this.getTimer();
       this.timerID = setTimeout(this.chrono, 1000);
@@ -183,7 +186,7 @@ export default {
       let seconds = this.diff.getSeconds();
       if (minutes < 10) minutes = '0' + minutes;
       if (seconds < 10) seconds = '0' + seconds;
-      return minutes + ':' + (seconds - 2 * this.nbQuestion);
+      return minutes + ':' + seconds;
     },
     chronoStart() {
       this.start = new Date();
