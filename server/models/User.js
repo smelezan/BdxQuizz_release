@@ -11,20 +11,6 @@ const User = mongoose.Schema(
       type: String,
       required: true,
     },
-    notifications: {
-      friends: {
-        type: [String],
-        required: true,
-      },
-      games: {
-        type: [Object],
-        required: true,
-      },
-    },
-    friendList: {
-      type: [String],
-      required: true,
-    },
     stats: {
       nbQuizzWon: {
         type: Number,
@@ -37,6 +23,10 @@ const User = mongoose.Schema(
       nbQuizzPlayed: {
         type: Number,
         default: 0,
+      },
+      bestEndlessScore: {
+        type: Number,
+        default: -1,
       },
       scores: {
         type: [Number],
@@ -78,6 +68,7 @@ User.methods.updateNumberOfQuizzPlayed = async function () {
 };
 
 User.methods.updateBestScore = async function (newScore, newTime) {
+  console.log("PUSH" + newScore);
   this.stats.scores.push(newScore);
   if (this.stats.bestScore === -1) {
     this.stats.bestTime = newTime
@@ -86,8 +77,9 @@ User.methods.updateBestScore = async function (newScore, newTime) {
     this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
   } else if (newScore == this.stats.bestScore) {
-    let oldTime = this.stats.bestTime.split[":"];
-    let splitNewTime = newTime.split[":"];
+    let oldTime = this.stats.bestTime.split(":");
+    console.log("NEW TIME" + newTime);
+    let splitNewTime = newTime.split(":");
     this.stats.times.push(splitNewTime[0] * 60 + splitNewTime[1]);
     if (splitNewTime[0] < oldTime[0]) {
       this.stats.bestTime = newTime;
@@ -101,11 +93,19 @@ User.methods.updateBestScore = async function (newScore, newTime) {
   await this.save();
 };
 
+User.methods.updateBestEndlessScore = async function (newScore) {
+  if (this.stats.bestScore === -1) {
+    this.stats.bestEndlessScore = newScore;
+  } else if (newScore > this.stats.bestEndlessScore) {
+    this.stats.bestEndlessScore = newScore;
+  }
+  await this.save();
+};
+
 User.methods.updateAverageScore = async function (newScore) {
   if (this.stats.averageScore === -1) {
     this.stats.averageScore = this.stats.bestScore;
-  }
-  else {
+  } else {
     this.stats.averageScore = (this.stats.averageScore * (this.stats.nbQuizzPlayed - 1) + newScore) / this.stats.nbQuizzPlayed;
   }
   await this.save();

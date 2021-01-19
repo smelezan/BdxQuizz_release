@@ -2,6 +2,8 @@ const Category = require("../models/Category");
 const User = require("../models/User");
 const jwt = require('jsonwebtoken');
 const mongodb = require('mongodb');
+const statsManagement = require('../utils/statsManagement');
+const common = require('../utils/common');
 const { find } = require("../models/User");
 
 
@@ -50,6 +52,30 @@ exports.getTopPlayer = (req, res) => {
     })
 }
 
+exports.updateUserEndlessStats = async (req, res) => {
+    console.log("TIME" + req.body.time);
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, 'secret_key', (err, decoded) => {
+        if (err)
+            return res.status(401).json({
+                title: 'unauthorized',
+            });
+        categoryName = req.body.category;
+        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+            {
+                '$inc': {
+                    ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
+                },
+
+            }, async (err, result) => {
+                User.findById(decoded.userId).then(async user => {
+                    await user.updateNumberOfQuizzPlayed();
+                    user.updateBestEndlessScore(req.body.score);
+                }, (err, result) => { })
+            });
+
+    });
+}
 exports.updateUserStats = async (req, res) => {
     console.log("TIME" + req.body.time);
     const token = req.headers.authorization.split(' ')[1];
@@ -86,37 +112,15 @@ exports.updateUserStats = async (req, res) => {
                     else {
                         let newTime = req.body.time.split(":");
                         let oldAverageTime = user.stats.category[categoryName].averageTime.split(":");
-                        let oldTime = user.stats.category[categoryName].bestTime.split(":");
-                        let averageMin = (parseInt(oldAverageTime[0]) * (user.stats.category[categoryName].nbQuizzPlayed - 1) + parseInt(newTime[0])) / user.stats.category[categoryName].nbQuizzPlayed;
-                        let averageSeconde = (parseInt(oldAverageTime[1]) * (user.stats.category[categoryName].nbQuizzPlayed - 1) + parseInt(newTime[1])) / user.stats.category[categoryName].nbQuizzPlayed;
+                        let averageMin = common.addToAverage(user, parseInt(oldAverageTime[0]), parseInt(newTime[0]), categoryName);
+                        let averageSeconde = common.addToAverage(user, parseInt(oldAverageTime[1]), parseInt(newTime[1]), categoryName);
                         this.averageTime = averageMin + ":" + averageSeconde;
-                        this.averageScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + req.body.score) / user.stats.category[categoryName].nbQuizzPlayed;
+                        this.averageScore = common.addToAverage(user, user.stats.category[categoryName].averageScore, req.body.score, categoryName);
 
-                        if (user.stats.category[categoryName].bestScore < req.body.score) {
-                            this.bestScore = req.body.score;
-                            this.time = req.body.time;
-                        }// UPDATE TIMER
-                        else if (user.stats.category[categoryName].bestScore == req.body.score) {
-                            this.bestScore = user.stats.category[categoryName].bestScore;
-                            if (newTime[0] < oldTime[0]) {
-                                this.time = req.body.time;
-                            }
-                            else if (newTime[0] == oldTime[0]) {
-                                if (newTime[1] < oldTime[1]) {
-                                    this.time = req.body.time;
-                                }
-                                else {
-                                    this.time = user.stats.category[categoryName].bestTime;
-                                }
-                            }
-                            else {
-                                this.time = user.stats.category[categoryName].bestTime;
-                            }
-                        }
-                        else {
-                            this.bestScore = user.stats.category[categoryName].bestScore;
-                            this.time = user.stats.category[categoryName].bestTime;
-                        }
+                        let res = statsManagement.bestTimeAndScore(req, user, categoryName);
+                        this.bestScore = res[0];
+                        this.time = res[1];
+
                         User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
                             {
                                 '$set': {
@@ -130,6 +134,7 @@ exports.updateUserStats = async (req, res) => {
                             })
                     }
                     await user.updateNumberOfQuizzPlayed();
+                    console.log("ICIMEME");
                     await user.updateBestScore(req.body.score, req.body.time);
                     await user.updateAverageTime(req.body.time);
                     user.updateAverageScore(req.body.score);
