@@ -82,9 +82,11 @@ export default {
         console.log(roomCode);
         axios
           .get(`/api/room/${roomCode}`)
-          .then(() => {
+          .then((result) => {
             this.roomCode = roomCode;
             this.isModeSelected = true;
+            this.mode = result.data.mode;
+            console.log(this.mode);
             this.socket = io({
               withCredentials: true,
               extraHeaders: {

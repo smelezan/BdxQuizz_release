@@ -50,6 +50,7 @@ exports.getRoomByRoomCode = (req, res) => {
         res.status(200).json({
           title: 'success',
           category: room.category,
+          mode: room.mode,
         });
       }
     } else {
@@ -182,6 +183,7 @@ module.exports.respond = (socket) => {
     console.log(params);
     updateReadyState(params.roomcode, socket, true);
     let room = ws.get(params.roomcode);
+    console.log(params.mode);
     if (params.mode === 'ZEN') {
       if (allAreReady(room)) {
         room.players.forEach((value, key) => {
@@ -201,7 +203,22 @@ module.exports.respond = (socket) => {
       }
     } else {
       room.players.forEach((value, key) => {
-        key.emit('answer', answer);
+        if (!answer.isCorrect) {
+          if (key === socket) key.emit('answer', answer);
+          else
+            key.emit('answer', {
+              isCorrect: true,
+              correctAnswer: answer.correctAnswer,
+            });
+        } else if (key === socket) {
+          key.emit('answer', answer);
+        } else {
+          key.emit('answer', {
+            isCorrect: false,
+            correctAnswer: answer.correctAnswer,
+          });
+        }
+
         value.ready = false;
       });
       setTimeout(async () => {

@@ -92,9 +92,9 @@ export default {
   created() {
     console.log(this.mode);
     this.socket.on('question', (params) => {
-      if (this.firstQuestion){
+      if (this.firstQuestion) {
         this.firstQuestion = false;
-        setTimeout(this.chronoStart,10);
+        setTimeout(this.chronoStart, 10);
       }
       this.isDisabled = false;
       console.log(params);
@@ -102,7 +102,11 @@ export default {
     });
     this.socket.on('answer', (params) => {
       console.log(params);
-      this.showAnswer(params.correctAnswer, this.currentAnswer);
+      this.showAnswer(
+        params.correctAnswer,
+        this.currentAnswer,
+        params.isCorrect
+      );
       this.currentAnswer = '';
 
       this.isDisabled = true;
@@ -145,9 +149,9 @@ export default {
     handleClick(index) {
       if (this.isDisabled) return;
       this.currentAnswer = this.question.propositions[index];
-      this.start.setSeconds(this.start.getSeconds()+2);
+      this.start.setSeconds(this.start.getSeconds() + 2);
       this.chronoPause(2000);
-      console.log(this.currentAnswer);
+      console.log(this.mode);
       this.socket.emit('answer', {
         roomcode: this.roomCode,
         answer: this.currentAnswer,
@@ -155,7 +159,7 @@ export default {
       });
       this.isDisabled = true;
     },
-    showAnswer(answer, propsitionSelected) {
+    showAnswer(answer, propsitionSelected, isCorrect) {
       const propositions = this.question.propositions;
       const indexAnswer = propositions.findIndex(
         (element) => element === answer
@@ -167,12 +171,14 @@ export default {
           (element) => element === propsitionSelected
         );
       }
-      if (answer === propsitionSelected) this.result.correct += 1;
+      if (isCorrect) this.result.correct += 1;
       else this.result.wrong += 1;
       console.log(indexProposition);
-      this.propositionsCards[indexProposition]['header_border_variant'] = 'danger';
+      this.propositionsCards[indexProposition]['header_border_variant'] =
+        'danger';
       this.propositionsCards[indexProposition]['border_variant'] = 'danger';
-      this.propositionsCards[indexProposition]['header_text_variant'] = 'danger';
+      this.propositionsCards[indexProposition]['header_text_variant'] =
+        'danger';
       this.propositionsCards[indexAnswer]['header_border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['header_text_variant'] = 'success';
