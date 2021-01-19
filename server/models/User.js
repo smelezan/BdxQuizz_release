@@ -69,11 +69,24 @@ User.methods.updateNumberOfQuizzPlayed = async function () {
   await this.save();
 };
 
-User.methods.updateBestScore = async function (newScore) {
+User.methods.updateBestScore = async function (newScore, newTime) {
   if (this.stats.bestScore === -1) {
+    this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
   } else if (newScore > this.stats.bestScore) {
+    this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
+  } else if (newScore == this.stats.bestScore) {
+    let oldTime = this.stats.bestTime.split[":"];
+    let splitNewTime = newTime.split[":"];
+    if (splitNewTime[0] < oldTime[0]) {
+      this.stats.bestTime = newTime;
+    }
+    else if (splitNewTime[0] == oldTime[0]) {
+      if (splitNewTime[1] < oldTime[1]) {
+        this.stats.bestTime = newTime;
+      }
+    }
   }
   await this.save();
 };
@@ -86,7 +99,22 @@ User.methods.updateAverageScore = async function (newScore) {
     this.stats.averageScore = (this.stats.averageScore * (this.stats.nbQuizzPlayed - 1) + newScore) / this.stats.nbQuizzPlayed;
   }
   await this.save();
-};
+}
+
+User.methods.updateAverageTime = async function (newTime) {
+  if (this.stats.averageTime === '') {
+    this.stats.averageTime = this.stats.bestTime;
+  }
+  else {
+    let splitNewTime = newTime.split(":");
+    let splitOldAverageTime = this.stats.averageTime.split(":");
+
+    let averageMin = (parseInt(splitOldAverageTime[0]) * (this.stats.nbQuizzPlayed - 1) + parseInt(splitNewTime[0])) / this.stats.nbQuizzPlayed;
+    let averageSeconde = (parseInt(splitOldAverageTime[1]) * (this.stats.nbQuizzPlayed - 1) + parseInt(splitNewTime[1])) / this.stats.nbQuizzPlayed;
+    this.stats.averageTime = averageMin + ":" + averageSeconde;
+  }
+  await this.save();
+};;
 
 User.plugin(uniqueValidator);
 module.exports = mongoose.model('User', User);

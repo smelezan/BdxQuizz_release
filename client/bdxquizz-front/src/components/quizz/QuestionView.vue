@@ -124,7 +124,7 @@ export default {
     displayQuestion(question) {
       if (question.message) {
         this.isEnded = true;
-        this.$emit('update-stats', this.result);
+        this.$emit('update-stats', this.result, this.getTimer());
       } else {
         this.propositionsCards = question.propositions.map(() => ({
           header_border_variant: 'secondary',
