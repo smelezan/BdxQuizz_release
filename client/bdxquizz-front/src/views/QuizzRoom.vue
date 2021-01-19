@@ -4,9 +4,9 @@
       <h1>{{ categoryName }}</h1>
       <br />
       <h2 v-if="!isModeSelected">Try out our different quizz modes</h2>
-      <h2 v-else>Bring some friends with you</h2>
+      <h2 v-else-if="!isQuizzStarted">Bring some friends with you</h2>
       <h4 v-if="!isModeSelected">Choose a mode below</h4>
-      <h4 v-else>And start whenever you want</h4>
+      <h4 v-else-if="!isQuizzStarted">And start whenever you want</h4>
     </div>
     <div id="content">
       <b-container style="margin: 0px; max-width: 100%">
@@ -76,15 +76,18 @@ export default {
   methods: {
     handleModeClick(payload) {
       this.mode = payload.mode;
+      console.log(this.mode);
       if (this.mode == 'Join') {
         const roomCode = payload.roomcode;
         console.log(payload);
         console.log(roomCode);
         axios
           .get(`/api/room/${roomCode}`)
-          .then(() => {
+          .then((result) => {
             this.roomCode = roomCode;
             this.isModeSelected = true;
+            this.mode = result.data.mode;
+            console.log(this.mode);
             this.socket = io({
               withCredentials: true,
               extraHeaders: {
