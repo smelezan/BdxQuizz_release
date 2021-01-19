@@ -256,6 +256,20 @@ module.exports.respond = (socket) => {
       });
     });
   });
+
+  socket.on('end', (params) => {
+    const { results, roomCode } = params;
+    console.log(params);
+    const room = ws.get(roomCode);
+
+    const { id } = room.players.get(socket);
+    console.log(id);
+    const finalResult = results.correct - results.wrong;
+    room.players.forEach((value, key) => {
+      key.emit('end', { results: finalResult, player: id });
+      value.ready = false;
+    });
+  });
   socket.on('disconnect', () => {
     disconnectUser(socket);
     console.log('User disconnected');
