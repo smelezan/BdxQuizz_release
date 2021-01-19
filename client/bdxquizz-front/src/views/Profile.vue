@@ -17,6 +17,7 @@
                             <strong>Pseudo :</strong> {{name}} <br />
                         </b-col>
                     </b-row>
+                    <h4>Check out your stats below</h4>
                     <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow">
                         <b-col>
                             <strong>Quizz Played :</strong> {{nbQuizzPlayed}} <br />

@@ -19,7 +19,7 @@
     </b-row>
     <b-row>
       <b-col cols="12" md="12">
-        <b-button size="sm" class="my-2 my-sm-0" @click="handleClick">
+        <b-button size="sm" class="my-2 my-sm-0" variant="primary" @click="handleClick">
           Start quizz
         </b-button>
       </b-col>

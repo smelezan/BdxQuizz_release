@@ -127,6 +127,7 @@ a > a{
   color: #16181b;
 }
 a > a:hover {
+  color: #16181b;
   text-decoration: none;
 }
 a > a:active {
