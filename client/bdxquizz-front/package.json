@@ -12,10 +12,12 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "jwt-token": "^1.0.9",
     "socket.io-client": "^3.1.0",
     "vue": "^2.6.11",
+    "vue-chartjs": "^3.5.1",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10"
   },

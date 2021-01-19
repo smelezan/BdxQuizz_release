@@ -38,6 +38,10 @@ const User = mongoose.Schema(
         type: Number,
         default: 0,
       },
+      scores: {
+        type: [Number],
+        default: [],
+      },
       bestScore: {
         type: Number,
         default: -1,
@@ -45,6 +49,10 @@ const User = mongoose.Schema(
       averageScore: {
         type: Number,
         default: -1,
+      },
+      times: {
+        type: [Number],
+        default: [],
       },
       bestTime: {
         type: String,
@@ -70,6 +78,7 @@ User.methods.updateNumberOfQuizzPlayed = async function () {
 };
 
 User.methods.updateBestScore = async function (newScore, newTime) {
+  this.stats.scores.push(newScore);
   if (this.stats.bestScore === -1) {
     this.stats.bestTime = newTime
     this.stats.bestScore = newScore;
@@ -79,6 +88,7 @@ User.methods.updateBestScore = async function (newScore, newTime) {
   } else if (newScore == this.stats.bestScore) {
     let oldTime = this.stats.bestTime.split[":"];
     let splitNewTime = newTime.split[":"];
+    this.stats.times.push(splitNewTime[0] * 60 + splitNewTime[1]);
     if (splitNewTime[0] < oldTime[0]) {
       this.stats.bestTime = newTime;
     }

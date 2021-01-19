@@ -138,7 +138,6 @@ export default {
     handleClick(index) {
       if (this.isDisabled) return;
       this.currentAnswer = this.question.propositions[index];
-      this.chronoPause(2000);
       this.nbQuestion++;
       console.log(this.currentAnswer);
       this.socket.emit('answer', {
@@ -172,27 +171,34 @@ export default {
       this.propositionsCards[indexAnswer]['border_variant'] = 'success';
       this.propositionsCards[indexAnswer]['header_text_variant'] = 'success';
     },
+
     chrono() {
       this.end = new Date();
       this.diff = new Date(this.end - this.start);
       this.$refs.chrono.innerText = this.getTimer();
       this.timerID = setTimeout(this.chrono, 1000);
     },
+    
     getTimer() {
       let minutes = this.diff.getMinutes();
       let seconds = this.diff.getSeconds();
+
       if (minutes < 10) minutes = '0' + minutes;
       if (seconds < 10) seconds = '0' + seconds;
-      return minutes + ':' + (seconds - 2 * this.nbQuestion);
+
+      return minutes + ':' + seconds;
     },
+
     chronoStart() {
       this.start = new Date();
       this.chrono();
     },
+
     chronoPause(time) {
       clearTimeout(this.timerID);
       this.timerID = setTimeout(this.chrono, time);
     },
+
     chronoStop() {
       clearTimeout(this.timerID);
     },
