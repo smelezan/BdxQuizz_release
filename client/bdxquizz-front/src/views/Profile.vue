@@ -4,37 +4,53 @@
       <h1>Profile</h1>
       <br />
     </div>
-      <b-container style="margin: 0px; max-width: 100%">
-        <button class="button" @click="updateChart">Update</button>
-        <b-row class="m-auto">
-            Quizz Played : {{nbQuizzPlayed}}
+    <div>
+      <b-container id="content" style="margin: 0px; max-width: 100%">
+        <b-row>
+          <b-col >
+            <button class="button" @click="updateChart">Update</button>
+          </b-col>
         </b-row>
-        <b-row class="m-auto">
-            Quizz Won : {{nbQuizzWon}}
+        <b-row class="d-flex align-items-center mx-auto my-5">
+            <b-col cols="12" md="6">
+              Quizz Played : {{nbQuizzPlayed}} <br />
+              Quizz Won : {{nbQuizzWon}} <br />
+              Quizz Lost : {{nbQuizzLost}} <br />
+              Quizz Ratio : {{nbQuizzWon/nbQuizzPlayed}}
+          </b-col>
+          <b-col cols="12" md="6">
+            <PieChart ref="quizz_chart" :chartdata="quizzData"></PieChart>
+          </b-col>
         </b-row>
-        <b-row class="m-auto">
-            Quizz Lost : {{nbQuizzLost}}
-        </b-row>
-        <b-row class="m-auto">
-            Quizz Ratio : {{nbQuizzWon/nbQuizzPlayed}}
-        </b-row>
-        <PieChart ref="quizz_chart" :chartdata="quizzData"></PieChart>
-        <b-row class="m-auto">
+        <b-row class="mx-auto my-3">
+          <b-col cols="6" md="6">
             Best Score : {{bestScore}}
-        </b-row>
-        <b-row class="m-auto">
+          </b-col>
+          <b-col cols="6" md="6">
             Average Score : {{averageScore}}
+          </b-col>
         </b-row>
-        <LineChart ref="score_chart" :chartdata="scoreData"></LineChart>
-        <b-row class="m-auto">
+        <b-row class="mx-auto mb-5">
+          <b-col cols="12" md="12">
+            <LineChart ref="score_chart" :chartdata="scoreData"></LineChart>
+          </b-col>
+        </b-row>
+        <b-row class="mx-auto my-3">
+          <b-col cols="6" md="6">
             Best Time : {{bestTime}}
-        </b-row>
-        <b-row class="m-auto">
+          </b-col>
+          <b-col cols="6" md="6">
             Average Time : {{averageTime}}
+          </b-col>
         </b-row>
-        <LineChart ref="time_chart" :chartdata="timeData"></LineChart>
+        <b-row class="mx-auto mb-5">
+          <b-col cols="12" md="12">
+            <LineChart ref="time_chart" :chartdata="timeData"></LineChart>
+          </b-col>
+        </b-row>
       </b-container>
     </div>
+  </div>
 </template>
 
 <script>
@@ -116,3 +132,9 @@ import LineChart from '@/components/LineChart';
     }
 };
 </script>
+
+<style>
+#content:before{
+  height: 2000px;
+}
+</style>
