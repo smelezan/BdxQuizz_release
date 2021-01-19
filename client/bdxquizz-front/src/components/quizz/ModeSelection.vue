@@ -10,7 +10,7 @@
           img-height="132"
           img-width="198"
           tag="article"
-          style="height: 410px; width: 300px"
+          style="height: 410px; width: 260px"
         >
           <b-card-text>No timer, no pressure</b-card-text>
           <b-form-group
@@ -39,7 +39,7 @@
           img-height="132"
           img-width="198"
           tag="article"
-          style="height: 410px; width: 300px"
+          style="height: 410px; width: 260px"
         >
           <b-card-text>Do your best</b-card-text>
           <b-form-group
@@ -62,19 +62,20 @@
       <b-col cols="auto" md="auto" class="mx-auto mb-3">
         <b-card
           class="shadow"
-          title="Endless"
+          title="Infinite"
           :img-src="require('@/assets/modes-images/infinite.png')"
           img-alt="infinite"
           img-height="132"
           img-width="198"
           tag="article"
-          style="height: 410px; width: 300px"
+          style="height: 410px; width: 260px"
         >
           <b-card-text>How long will you last ?</b-card-text>
           <b-form-group
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
+            style="visibility:hidden"
           >
             <b-form-select
               id="input-3"
@@ -97,7 +98,7 @@
           img-height="132"
           img-width="198"
           tag="article"
-          style="height: 410px; width: 300px"
+          style="height: 410px; width: 260px"
         >
           <b-card-text>Join a quizz with your friends</b-card-text>
           <b-form-group
@@ -130,7 +131,7 @@ export default {
     return {
       searchQuery: '',
       form: {
-        difficulty: 'easy',
+        difficulty: 'any',
       },
       difficulty: ['easy', 'medium', 'hard', 'any'],
     };
@@ -148,6 +149,15 @@ export default {
 </script>
 
 <style>
+#content > .container{
+  padding: 0px;
+}
+#content > .container > .row > .container{
+  padding: 0px;
+}
+#content > .container > .row > .container > .row > div{
+  padding: 0px;
+}
 @media screen and (max-width: 764px) {
   #content:before {
     height: 2300px;
