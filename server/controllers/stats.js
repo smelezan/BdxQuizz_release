@@ -63,34 +63,34 @@ exports.updateUserEndlessStats = async (req, res) => {
         categoryName = req.body.category;
         User.findById(decoded.userId).then(async user => {
             let averageScore = score;
-            if(user.stats.nbQuizzPlayed != 0){
+            if (user.stats.nbQuizzPlayed != 0) {
                 averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed - 1) + score) / user.stats.nbQuizzPlayed;
             }
 
             let averageCatScore = score;
-            if (user.stats.category[categoryName]){
+            if (user.stats.category[categoryName]) {
                 averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + score) / user.stats.category[categoryName].nbQuizzPlayed;
-                }
+            }
 
             await User.updateOne({ '_id': decoded.userId },
-            {
-                '$inc': {
-                    'stats.nbQuizzPlayed': 1,
-                    ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
-                },
-                '$push': {
-                    'stats.scores': score
-                },
-                '$max': {
-                    'stats.bestScore': score,
-                    ['stats.category.' + categoryName + ".bestScore"]: score
-                },
-                '$set': {
-                    'stats.averageScore': averageScore,
-                    ['stats.category.' + categoryName + ".averageScore"]: averageCatScore
-                }
-            });
-           
+                {
+                    '$inc': {
+                        'stats.nbQuizzPlayed': 1,
+                        ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
+                    },
+                    '$push': {
+                        'stats.scores': score
+                    },
+                    '$max': {
+                        'stats.bestScore': score,
+                        ['stats.category.' + categoryName + ".bestScore"]: score
+                    },
+                    '$set': {
+                        'stats.averageScore': averageScore,
+                        ['stats.category.' + categoryName + ".averageScore"]: averageCatScore
+                    }
+                });
+
             return res.status(200).json(user.stats);
         });
 
@@ -112,52 +112,52 @@ exports.updateUserStats = async (req, res) => {
 
         User.findById(decoded.userId).then(async user => {
             const timeValue = getValueTime(time);
-            
+
             let averageScore = score;
             let averageTime = timeValue;
-            if(user.stats.nbQuizzPlayed != 0){
-                averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed - 1) + score) / user.stats.nbQuizzPlayed;
-                averageTime = (user.stats.averageTime * (user.stats.nbQuizzPlayed - 1) + timeValue) / user.stats.nbQuizzPlayed;
+            if (user.stats.nbQuizzPlayed != 0) {
+                averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed) + score) / (user.stats.nbQuizzPlayed + 1);
+                averageTime = (user.stats.averageTime * (user.stats.nbQuizzPlayed) + timeValue) / (user.stats.nbQuizzPlayed + 1);
             }
 
             let averageCatScore = score;
             let averageCatTime = timeValue;
-            if (user.stats.category[categoryName]){
-                averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + score) / user.stats.category[categoryName].nbQuizzPlayed;
-                averageCatTime = (user.stats.category[categoryName].averageTime * (user.stats.category[categoryName].nbQuizzPlayed - 1) + timeValue) / user.stats.category[categoryName].nbQuizzPlayed;
+            if (user.stats.category[categoryName]) {
+                averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed) + score) / (user.stats.category[categoryName].nbQuizzPlayed + 1);
+                averageCatTime = (user.stats.category[categoryName].averageTime * (user.stats.category[categoryName].nbQuizzPlayed) + timeValue) / (user.stats.category[categoryName].nbQuizzPlayed + 1);
             }
 
             await User.updateOne({ '_id': decoded.userId },
-            {
-                '$inc': {
-                    'stats.nbQuizzWon': nbWon,
-                    'stats.nbQuizzLost': nbLost,
-                    'stats.nbQuizzPlayed': 1,
+                {
+                    '$inc': {
+                        'stats.nbQuizzWon': nbWon,
+                        'stats.nbQuizzLost': nbLost,
+                        'stats.nbQuizzPlayed': 1,
 
-                    ["stats.category." + categoryName + ".nbQuizzWon"]: nbWon,
-                    ["stats.category." + categoryName + ".nbQuizzLost"]: nbLost,
-                    ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
-                },
-                '$push': {
-                    'stats.scores': score,
-                    'stats.times': timeValue
-                },
-                '$max': {
-                    'stats.bestScore': score,
-                    ['stats.category.' + categoryName + ".bestScore"]: score
-                },
-                '$min': {
-                    'stats.bestTime': timeValue,
-                    ['stats.category.' + categoryName + ".bestTime"]: timeValue
-                },
-                '$set': {
-                    'stats.averageScore': averageScore,
-                    'stats.averageTime': averageTime,
-                    ['stats.category.' + categoryName + ".averageScore"]: averageCatScore,
-                    ['stats.category.' + categoryName + ".averageTime"]: averageCatTime
-                }
-            });
-           
+                        ["stats.category." + categoryName + ".nbQuizzWon"]: nbWon,
+                        ["stats.category." + categoryName + ".nbQuizzLost"]: nbLost,
+                        ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
+                    },
+                    '$push': {
+                        'stats.scores': score,
+                        'stats.times': timeValue
+                    },
+                    '$max': {
+                        'stats.bestScore': score,
+                        ['stats.category.' + categoryName + ".bestScore"]: score
+                    },
+                    '$min': {
+                        'stats.bestTime': timeValue,
+                        ['stats.category.' + categoryName + ".bestTime"]: timeValue
+                    },
+                    '$set': {
+                        'stats.averageScore': averageScore,
+                        'stats.averageTime': averageTime,
+                        ['stats.category.' + categoryName + ".averageScore"]: averageCatScore,
+                        ['stats.category.' + categoryName + ".averageTime"]: averageCatTime
+                    }
+                });
+
             return res.status(200).json(user.stats);
         });
     });
@@ -192,7 +192,7 @@ exports.updateCategoryStats = (req, res) => {
     })
 }
 
-function getValueTime(time){
+function getValueTime(time) {
     let splitTime = time.split(":");
     return parseFloat(splitTime[0]) * 60 + parseFloat(splitTime[1]);
-  }
+}

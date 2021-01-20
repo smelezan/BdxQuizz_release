@@ -30,7 +30,7 @@ describe('Categories', () => {
         })
     });
 
-    describe('User Stats', () => {
+    describe('GET User Stats', () => {
         it('it should get a user\'s stats', (done) => {
             chai
                 .request(app)
@@ -38,9 +38,34 @@ describe('Categories', () => {
                 .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res) => {
                     let stats = JSON.parse(res.text).stats;
-                    console.log("STATS" + stats.nbQuizzWon);
+                    res.should.have.status(200);
+                    stats.should.have.property('nbQuizzWon');
+                    stats.should.have.property('nbQuizzLost');
+                    stats.should.have.property('nbQuizzPlayed');
+                    stats.should.have.property('bestEndlessScore');
+                    stats.should.have.property('bestScore');
+                    stats.should.have.property('averageScore');
+                    stats.should.have.property('scores');
+                    stats.should.have.property('times');
+                    stats.should.have.property('bestTime');
+                    stats.should.have.property('averageTime');
                     done();
                 });
         });
+    });
+    describe('UPDATE User Endless Stats', () => {
+        // this.timeout(5000);
+        it('it should update user endless stats', (done) => {
+            chai
+                .request(app)
+                .put('/api/stats/user/endless')
+                .set({ "Authorization": `Bearer ${token}` })
+                .send({ category: "Mathematics", score: 20 })
+                .end((err, res) => {
+                    // res.should.have.status(200);
+                    console.log("RES" + JSON.stringify(res));
+                    done();
+                });
+        }).timeout(10000);
     });
 });
