@@ -71,7 +71,7 @@ User.methods.updateBestScore = async function (newScore, newTime) {
   this.stats.scores.push(newScore);
 
   let splitNewTime = newTime.split(":");
-  this.stats.times.push(splitNewTime[0] * 60 + splitNewTime[1]);
+  this.stats.times.push(parseFloat(splitNewTime[0]) * 60 + parseFloat(splitNewTime[1]));
   if (this.stats.bestScore === -1) {
     this.stats.bestTime = newTime
     this.stats.bestScore = newScore;

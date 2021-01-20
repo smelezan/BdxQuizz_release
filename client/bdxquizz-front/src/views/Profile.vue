@@ -154,6 +154,8 @@ import BarChart from '@/components/BarChart';
     },
     methods: {
         setCategoryChart(){
+            console.log(this.categories);
+
             let labels = [];
 
             let dataWon = [];
@@ -176,8 +178,10 @@ import BarChart from '@/components/BarChart';
                 dataBScore.push(this.categories[category].bestScore);
                 dataAScore.push(this.categories[category].averageScore);
 
-                dataBTime.push(this.categories[category].bestTime);
-                dataATime.push(this.categories[category].averageTime);
+                const splitBest = this.categories[category].bestTime.split(":");
+                dataBTime.push(parseFloat(splitBest[0])*60 + parseFloat(splitBest[1]));
+                const splitAverage = this.categories[category].averageTime.split(":");
+                dataATime.push(parseFloat(splitAverage[0])*60 + parseFloat(splitAverage[1]));
             }
 
             this.catQuizzData = {
