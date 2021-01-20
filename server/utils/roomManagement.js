@@ -28,12 +28,14 @@ const createRoom = (params) =>
         .then((questions) => {
           const newRoom = {};
           newRoom.roomCode = roomCode;
+
           newRoom.nbQuestions = params.nbQuestions;
           newRoom.questions = questions;
           newRoom.host = params.host;
           newRoom.mode = params.mode;
           newRoom.category = params.category;
           newRoom.difficulty = params.difficulty;
+
           resolve(newRoom);
         });
     });

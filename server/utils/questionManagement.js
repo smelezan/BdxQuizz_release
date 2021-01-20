@@ -49,14 +49,13 @@ const parseQuestion = (question) => {
 
 const getQuestions = async (
   numberOfQuestions = 10,
-  category = 0,
+  category = 'Ultimate',
   difficulty = 'medium'
 ) => {
   const categoryResponse = await Category.findOne({ name: category });
   if (difficulty === 'any') {
     difficulty = '';
   }
-  console.log(url(numberOfQuestions, categoryResponse.categoryId, difficulty));
   const response = await axios.get(
     url(numberOfQuestions, categoryResponse.categoryId, difficulty)
   );

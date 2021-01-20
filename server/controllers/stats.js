@@ -47,26 +47,24 @@ exports.getTopPlayer = (req, res) => {
 exports.updateUserEndlessStats = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const score = req.body.score;
-    jwt.verify(token, 'secret_key', (err, decoded) => {
+    jwt.verify(token, 'secret_key', async (err, decoded) => {
         if (err)
             return res.status(401).json({
                 title: 'unauthorized',
             });
         categoryName = req.body.category;
+        await User.updateOne({ '_id': decoded.userId },
+            {
+                '$inc': {
+                    'stats.nbEndlessQuizzPlayed': 1,
+                    ["stats.category." + categoryName + ".nbEndlessQuizzPlayed"]: 1,
+                },
+                '$max': {
+                    'stats.bestEndlessScore': score,
+                    ['stats.category.' + categoryName + ".bestEndlessScore"]: score
+                },
+            });
         User.findById(decoded.userId).then(async user => {
-
-            await User.updateOne({ '_id': decoded.userId },
-                {
-                    '$inc': {
-                        'stats.nbEndlessQuizzPlayed': 1,
-                        ["stats.category." + categoryName + ".nbEndlessQuizzPlayed"]: 1,
-                    },
-                    '$max': {
-                        'stats.bestEndlessScore': score,
-                        ['stats.category.' + categoryName + ".bestEndlessScore"]: score
-                    },
-                });
-
             return res.status(200).json(user.stats);
         });
 
@@ -133,7 +131,6 @@ exports.updateUserStats = async (req, res) => {
                         ['stats.category.' + categoryName + ".averageTime"]: averageCatTime
                     }
                 });
-
             return res.status(200).json(user.stats);
         });
     });

@@ -5,6 +5,7 @@ const common = require('../utils/common');
 
 exports.getUser = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
+
   jwt.verify(token, 'secret_key', (err, decoded) => {
     if (err)
       return res.status(401).json({
@@ -15,6 +16,7 @@ exports.getUser = (req, res) => {
         return res.status(401).json({
           title: 'unauthorized',
         });
+
       return res.status(200).json({
         title: 'user grabbed',
         user: {
