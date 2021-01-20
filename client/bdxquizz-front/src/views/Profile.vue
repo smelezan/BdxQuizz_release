@@ -27,6 +27,7 @@
                 v-if="loaded"
                 ref="quizz_chart"
                 :chartdata="quizzData"
+                :title="titleA"
               ></PieChart>
             </b-col>
             <b-col cols="12" md="12">
@@ -34,6 +35,7 @@
                 v-if="loaded"
                 ref="quizz_chart"
                 :chartdata="catQuizzData"
+                :title="titleB"
               ></BarChart>
             </b-col>
           </b-row>
@@ -49,6 +51,7 @@
                 v-if="loaded"
                 ref="score_chart"
                 :chartdata="scoreData"
+                :title="titleC"
               ></LineChart>
             </b-col>
             <b-col cols="12" md="12" class="mb-3">
@@ -56,6 +59,7 @@
                 v-if="loaded"
                 ref="quizz_chart"
                 :chartdata="catScoreData"
+                :title="titleD"
               ></BarChart>
             </b-col>
           </b-row>
@@ -71,6 +75,7 @@
                 v-if="loaded"
                 ref="time_chart"
                 :chartdata="timeData"
+                :title="titleE"
               ></LineChart>
             </b-col>
             <b-col cols="12" md="12" class="mb-3">
@@ -78,6 +83,7 @@
                 v-if="loaded"
                 ref="quizz_chart"
                 :chartdata="catTimeData"
+                :title="titleF"
               ></BarChart>
             </b-col>
           </b-row>
@@ -102,6 +108,13 @@ export default {
   },
   data() {
     return {
+        titleA: "Win Rate",
+        titleB: "Win rate by category",
+        titleC: "Scores",
+        titleD: "Scores by category",
+        titleE: "Times",
+        titleF: "Times by category",
+
       loaded: false,
       name: 'username',
       nbQuizzWon: 0,
@@ -155,7 +168,7 @@ export default {
         labels: ['Win', 'Lose'],
         datasets: [
           {
-            backgroundColor: ['#00D8FF', '#AA0055'],
+            backgroundColor: ['#3eac3e', '#AA0055'],
             data: [this.nbQuizzWon, this.nbQuizzLost],
           },
         ],
@@ -165,7 +178,7 @@ export default {
         datasets: [
           {
             label: 'Score',
-            backgroundColor: '#00D8FF',
+            backgroundColor: '#f1c40f',
             data: scores,
           },
         ],
@@ -175,7 +188,7 @@ export default {
         datasets: [
           {
             label: 'Time',
-            backgroundColor: '#00D8FF',
+            backgroundColor: '#f1c40f',
             data: times,
           },
         ],
@@ -220,7 +233,7 @@ export default {
           },
           {
             label: 'Quizz Won',
-            backgroundColor: '#00D8FF',
+            backgroundColor: '#3eac3e',
             data: dataWon,
           },
           {
@@ -236,7 +249,7 @@ export default {
         datasets: [
           {
             label: 'Best Score',
-            backgroundColor: '#3eac3e',
+            backgroundColor: '#00D8FF',
             data: dataBScore,
           },
           {
@@ -252,7 +265,7 @@ export default {
         datasets: [
           {
             label: 'Best Time',
-            backgroundColor: '#3eac3e',
+            backgroundColor: '#00D8FF',
             data: dataBTime,
           },
           {
