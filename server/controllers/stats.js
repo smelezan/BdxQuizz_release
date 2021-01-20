@@ -62,33 +62,17 @@ exports.updateUserEndlessStats = async (req, res) => {
             });
         categoryName = req.body.category;
         User.findById(decoded.userId).then(async user => {
-            let averageScore = score;
-            if (user.stats.nbQuizzPlayed != 0) {
-                averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed - 1) + score) / user.stats.nbQuizzPlayed;
-            }
-
-            let averageCatScore = score;
-            if (user.stats.category[categoryName]) {
-                averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + score) / user.stats.category[categoryName].nbQuizzPlayed;
-            }
 
             await User.updateOne({ '_id': decoded.userId },
                 {
                     '$inc': {
-                        'stats.nbQuizzPlayed': 1,
-                        ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
-                    },
-                    '$push': {
-                        'stats.scores': score
+                        'stats.nbEndlessQuizzPlayed': 1,
+                        ["stats.category." + categoryName + ".nbEndlessQuizzPlayed"]: 1,
                     },
                     '$max': {
-                        'stats.bestScore': score,
-                        ['stats.category.' + categoryName + ".bestScore"]: score
+                        'stats.bestEndlessScore': score,
+                        ['stats.category.' + categoryName + ".bestEndlessScore"]: score
                     },
-                    '$set': {
-                        'stats.averageScore': averageScore,
-                        ['stats.category.' + categoryName + ".averageScore"]: averageCatScore
-                    }
                 });
 
             return res.status(200).json(user.stats);
