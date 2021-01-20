@@ -138,9 +138,9 @@ export default {
 
     updateStats(result, timeResult) {
       console.log('MODE' + this.mode);
-      axios.put('/api/stats/' + this.categoryName, {
-        nbGoodAnswers: result.correct,
-        nbBadAnswers: result.wrong,
+      axios.put('/api/stats', {
+        category: this.categoryName,
+        score: result.correct
       });
 
       if (result.wrong < 5) {

@@ -24,14 +24,6 @@ exports.getUserStats = (req, res) => {
     });
 }
 
-exports.getStatsByCategory = (req, res) => {
-    categoryId = req.params.id;
-    Category.findOne({ categoryId }).then(categorie => {
-        stats = categorie.stats;
-        res.status(200).json({ stats })
-    });
-};
-
 exports.getTopPlayerOfCategory = (req, res) => {
     category = req.params.id;
     User.findOne({ ["stats.category." + category]: { $exists: true } }, (err, user) => {
@@ -157,20 +149,20 @@ exports.getSuccessRatioByCategory = (req, res) => {
 }
 
 exports.updateCategoryStats = (req, res) => {
-    categoryName = req.params.id;
-    Category.updateOne({ name: categoryName },
-        {
-            '$inc': {
-                'stats.totalPlayed': 1,
-                'stats.nbGoodAnswers': req.body.nbGoodAnswers,
-                'stats.nbBadAnswers': req.body.nbBadAnswers
-            }
-        }, (err, result) => {
-            res.status(200).json({ message: "Updated", result: result });
-        })
-    Category.findOne({ name: categoryName }).then(category => {
-        category.updateSuccessRatio();
-    })
+    const token = req.headers.authorization.split(' ')[1];
+    jwt.verify(token, 'secret_key', (err, decoded) => {
+        if (err)
+            return res.status(401).json({ title: 'unauthorized' });
+
+        categoryName = req.body.category;
+        console.log(categoryName);
+        User.findById(decoded.userId).then(async user => {
+            Category.findOne({ name: categoryName }).then(category => {
+                category.updateBestPlayer(user.username, req.body.score);
+                return res.status(200).json({ message: "Updated"});
+            });
+        });
+    });
 }
 
 function getValueTime(time) {
