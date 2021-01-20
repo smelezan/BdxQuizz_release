@@ -87,6 +87,7 @@ export default {
             this.roomCode = roomCode;
             this.isModeSelected = true;
             this.mode = result.data.mode;
+            this.categoryName = result.data.category;
             console.log(this.mode);
             this.socket = io({
               withCredentials: true,
@@ -140,7 +141,7 @@ export default {
       console.log('MODE' + this.mode);
       axios.put('/api/stats', {
         category: this.categoryName,
-        score: result.correct
+        score: result.correct,
       });
 
       if (result.wrong <= 5) {
