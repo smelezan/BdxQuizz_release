@@ -14,7 +14,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav id="roads">
           <b-nav-item><router-link to="/">Home</router-link></b-nav-item>
-          <b-nav-item><router-link to="/about">About</router-link></b-nav-item>
+          <b-nav-item><router-link to="/stats/categories">Ranking</router-link></b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->

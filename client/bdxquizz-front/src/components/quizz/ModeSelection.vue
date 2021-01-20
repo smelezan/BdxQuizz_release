@@ -46,6 +46,7 @@
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
+            style="visibility: hidden"
           >
             <b-form-select
               id="input-3"
@@ -75,7 +76,7 @@
             id="input-group-3"
             label="Difficulty:"
             label-for="input-3"
-            style="visibility:hidden"
+            style="visibility: hidden"
           >
             <b-form-select
               id="input-3"
@@ -149,13 +150,13 @@ export default {
 </script>
 
 <style scopped>
-#content > .container{
+#content > .container {
   padding: 0px;
 }
-#content > .container > .row > .container{
+#content > .container > .row > .container {
   padding: 0px;
 }
-#content > .container > .row > .container > .row > div{
+#content > .container > .row > .container > .row > div {
   padding: 0px;
 }
 @media screen and (max-width: 764px) {
