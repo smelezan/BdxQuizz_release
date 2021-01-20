@@ -32,14 +32,6 @@ const User = mongoose.Schema(
 				type: Number,
 				default: -1,
 			},
-			bestEndlessScore: {
-				type: Number,
-				default: -1,
-			},
-			nbEndlessQuizzPlayed: {
-				type: Number,
-				default: 0,
-			},
 			averageScore: {
 				type: Number,
 				default: -1,

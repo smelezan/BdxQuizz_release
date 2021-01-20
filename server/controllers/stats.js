@@ -56,12 +56,12 @@ exports.updateUserEndlessStats = async (req, res) => {
         await User.updateOne({ '_id': decoded.userId },
             {
                 '$inc': {
-                    'stats.nbEndlessQuizzPlayed': 1,
-                    ["stats.category." + categoryName + ".nbEndlessQuizzPlayed"]: 1,
+                    'stats.nbQuizzPlayed': 1,
+                    ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
                 },
                 '$max': {
-                    'stats.bestEndlessScore': score,
-                    ['stats.category.' + categoryName + ".bestEndlessScore"]: score
+                    'stats.bestScore': score,
+                    ['stats.category.' + categoryName + ".bestScore"]: score
                 },
             });
         User.findById(decoded.userId).then(async user => {
