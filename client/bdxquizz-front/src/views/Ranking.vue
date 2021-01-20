@@ -83,9 +83,6 @@ export default {
   mounted() {
     axios.get('/api/categories').then((resCat) => {
       axios.get('/api/stats/user').then((resUser) => {
-        console.log(resCat.data);
-        console.log(resUser.data);
-        
         this.name = resUser.data.username;
 
         const allCategories = resCat.data.categories;
@@ -98,8 +95,6 @@ export default {
             genStats: allCategories[index].stats
           });
         }
-        
-        console.log(this.categories);
       });
     });
   }

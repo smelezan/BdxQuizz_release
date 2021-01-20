@@ -195,8 +195,6 @@ export default {
       };
     },
     setCategoryChart() {
-      console.log(this.categories);
-
       let labels = [];
 
       let dataWon = [];

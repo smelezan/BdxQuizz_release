@@ -76,11 +76,8 @@ export default {
   methods: {
     handleModeClick(payload) {
       this.mode = payload.mode;
-      console.log(this.mode);
       if (this.mode == 'Join') {
         const roomCode = payload.roomcode;
-        console.log(payload);
-        console.log(roomCode);
         axios
           .get(`/api/room/${roomCode}`)
           .then((result) => {
@@ -88,7 +85,6 @@ export default {
             this.isModeSelected = true;
             this.mode = result.data.mode;
             this.categoryName = result.data.category;
-            console.log(this.mode);
             this.socket = io({
               withCredentials: true,
               extraHeaders: {
@@ -99,7 +95,6 @@ export default {
                 token: localStorage.getItem('token'),
               },
             });
-            console.log(this.roomCode);
             this.socket.emit('join-room', { roomCode });
           })
           .catch(() => {
@@ -116,7 +111,6 @@ export default {
           })
           .then((response) => {
             this.roomCode = response.data.roomCode;
-            console.log(this.roomCode);
             this.isModeSelected = true;
             this.socket = io({
               withCredentials: true,
@@ -138,7 +132,6 @@ export default {
     },
 
     updateStats(result, timeResult) {
-      console.log('MODE' + this.mode);
       axios.put('/api/stats', {
         category: this.categoryName,
         score: result.correct,

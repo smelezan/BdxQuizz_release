@@ -63,7 +63,6 @@ exports.getRoomByRoomCode = (req, res) => {
   });
 };
 exports.getNextQuestion = (req, res) => {
-  // console.log(req.body.roomCode);
   Room.findOne({ roomCode: req.body.roomCode }).then((room) => {
     if (room !== undefined) {
       room.getNextQuestion().then((question) => {
@@ -76,14 +75,12 @@ exports.getNextQuestion = (req, res) => {
       });
     } else {
       res.status(400).json({ message: 'This room doesnt exist' });
-      // console.log(`La room ${req.body.roomCode} n'existe pas`);
     }
   });
 };
 
 exports.getAnswer = (req, res) => {
   const { answer, roomCode } = req.body;
-  // console.log(req.body);
   Room.findOne({ roomCode }).then(async (room) => {
     const correctAnswer = await room.getAnswer(answer);
     if (correctAnswer === answer) {
@@ -109,7 +106,6 @@ function disconnectUser(socket) {
     });
   });
   const room = ws.get(currRoomCode);
-  // console.log(`delete ${room.players.get(socket)} from room: ${currRoomCode}`);
   room.players.forEach((value, key) => {
     key.emit('disconnection', { id: room.players.get(socket) });
   });
@@ -123,7 +119,6 @@ async function nextQuestion(roomCode, isFirst) {
   const room = await Room.findOne({ roomCode });
   if (room !== undefined) {
     const question = await room.getNextQuestion(isFirst);
-    // console.log(question);
     if (question === undefined) {
       return { message: 'no question left' };
     }
@@ -163,9 +158,6 @@ function updateReadyState(roomcode, socket, ready) {
 }
 
 module.exports.respond = (socket) => {
-  // console.log('User connected');
-  // console.log(ws);
-
   socket.on('start', async (params) => {
     const question = await nextQuestion(params.roomcode, true);
     updateReadyState(params.roomcode, socket, true);
@@ -181,10 +173,8 @@ module.exports.respond = (socket) => {
 
   socket.on('answer', async (params) => {
     const answer = await getCurrentAnswer(params.roomcode, params.answer);
-    // console.log(params);
     updateReadyState(params.roomcode, socket, true);
     let room = ws.get(params.roomcode);
-    // console.log(params.mode);
     if (params.mode === 'ZEN') {
       if (allAreReady(room)) {
         room.players.forEach((value, key) => {
@@ -199,8 +189,6 @@ module.exports.respond = (socket) => {
             value.ready = false;
           });
         }, 2000);
-      } else {
-        // console.log('Waiting for players');
       }
     } else {
       room.players.forEach((value, key) => {
@@ -271,6 +259,5 @@ module.exports.respond = (socket) => {
   });
   socket.on('disconnect', () => {
     disconnectUser(socket);
-    // console.log('User disconnected');
   });
 };
