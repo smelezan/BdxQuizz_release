@@ -25,6 +25,13 @@ describe('Categories', () => {
                 .send({ "username": "test", "password": "test" })
                 .end((err, res) => {
                     token = JSON.parse(res.text).token;
+                });
+            chai
+                .request(app)
+                .post('/api/auth/signup')
+                .send({ "username": "toto", "password": "toto" })
+                .end((err, res) => {
+
                     done();
                 });
         })
@@ -43,6 +50,7 @@ describe('Categories', () => {
                     stats.should.have.property('nbQuizzLost');
                     stats.should.have.property('nbQuizzPlayed');
                     stats.should.have.property('bestEndlessScore');
+                    stats.should.have.property('nbEndlessQuizzPlayed');
                     stats.should.have.property('bestScore');
                     stats.should.have.property('averageScore');
                     stats.should.have.property('scores');
@@ -54,7 +62,6 @@ describe('Categories', () => {
         });
     });
     describe('UPDATE User Endless Stats', () => {
-        // this.timeout(5000);
         it('it should update user endless stats', (done) => {
             chai
                 .request(app)
@@ -62,10 +69,44 @@ describe('Categories', () => {
                 .set({ "Authorization": `Bearer ${token}` })
                 .send({ category: "Mathematics", score: 20 })
                 .end((err, res) => {
-                    // res.should.have.status(200);
-                    console.log("RES" + JSON.stringify(res));
+                    res.should.have.status(200);
+                    let stats = JSON.parse(res.text);
+                    let categoryStats = JSON.parse(res.text).category.Mathematics;
+
+                    stats.should.have.property('nbEndlessQuizzPlayed').eql(1);
+                    stats.should.have.property('bestEndlessScore').eql(20);
+                    categoryStats.should.have.property('bestEndlessScore').eql(20);
+                    categoryStats.should.have.property('nbEndlessQuizzPlayed').eql(1);
                     done();
                 });
-        }).timeout(10000);
+        });
+    });
+    describe('GET Top Player', () => {
+        it('it should get top player', (done) => {
+            User.updateOne({ username: "test" },
+                {
+                    '$set': {
+                        'stats.nbQuizzWon': 5,
+                    }
+                }).then(res => { });
+            User.updateOne({ username: "toto" },
+                {
+                    '$set': {
+                        'stats.nbQuizzWon': 8,
+                    }
+                }).then(res => { });
+            chai
+                .request(app)
+                .get('/api/stats/topPlayer')
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    let firstPlace = JSON.parse(res.text).descendingOrder[0];
+                    let secondPlace = JSON.parse(res.text).descendingOrder[1];
+                    firstPlace.should.have.property('username').eql("toto");
+                    secondPlace.should.have.property('username').eql("test");
+                    done();
+                });
+
+        });
     });
 });
