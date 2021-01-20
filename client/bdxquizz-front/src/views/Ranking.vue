@@ -50,7 +50,9 @@
                         {{name}}
                       </b-col>
                       <b-col cols="12" md="12">
-                        {{category.userStats.bestScore}}
+                        <span v-if="typeof category.userStats !== 'undefined'">
+                          {{category.userStats.bestScore}}
+                        </span>
                       </b-col>
                     </b-row>
                   </b-container>
@@ -87,27 +89,19 @@ export default {
         this.name = resUser.data.username;
 
         const allCategories = resCat.data.categories;
-        for(let category in resUser.data.stats.category){
-          const genStats = this.getCategory(allCategories, category);
+        const userCategories = resUser.data.stats.category;
+        for(let index in allCategories){
+          const name = allCategories[index].name;
           this.categories.push({
-            name: category,
-            userStats: resUser.data.stats.category[category],
-            genStats: genStats
+            name: name,
+            userStats: userCategories[name],
+            genStats: allCategories[index].stats
           });
         }
         
         console.log(this.categories);
       });
     });
-  },
-  methods: {
-    getCategory(allCategories, name){
-      for(let index in allCategories){
-        if(allCategories[index].name === name)
-          return allCategories[index].stats;
-      }
-      return null;
-    }
   }
 };
 </script>
