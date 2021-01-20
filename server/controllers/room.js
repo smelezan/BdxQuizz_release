@@ -264,7 +264,7 @@ module.exports.respond = (socket) => {
 
     const { id } = room.players.get(socket);
     console.log(id);
-    const finalResult = results.correct - results.wrong;
+    const finalResult = results.correct;
     room.players.forEach((value, key) => {
       key.emit('end', { results: finalResult, player: id });
       value.ready = false;
