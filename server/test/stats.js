@@ -17,30 +17,29 @@ chai.use(chaiHttp);
 let token;
 
 describe('Categories', () => {
-    beforeEach((done) => {
-        User.deleteMany({}, () => {
-            chai
-                .request(app)
-                .post('/api/auth/signup')
-                .send({ "username": "test", "password": "test" })
-                .end((err, res) => {
-                    token = JSON.parse(res.text).token;
-                    done();
-                });
-        })
-    });
-
-    describe('User Stats', () => {
-        it('it should get a user\'s stats', (done) => {
-            chai
-                .request(app)
-                .get('/api/stats/user')
-                .set({ "Authorization": `Bearer ${token}` })
-                .end((err, res) => {
-                    let stats = JSON.parse(res.text).stats;
-                    console.log("STATS" + stats.nbQuizzWon);
-                    done();
-                });
+  beforeEach((done) => {
+    User.deleteMany({}, () => {
+      chai
+        .request(app)
+        .post('/api/auth/signup')
+        .send({ username: 'test', password: 'test' })
+        .end((err, res) => {
+          token = JSON.parse(res.text).token;
+          done();
         });
     });
+  });
+
+  describe('User Stats', () => {
+    it("it should get a user's stats", (done) => {
+      chai
+        .request(app)
+        .get('/api/stats/user')
+        .set({ Authorization: `Bearer ${token}` })
+        .end((err, res) => {
+          const { stats } = JSON.parse(res.text);
+          done();
+        });
+    });
+  });
 });

@@ -11,7 +11,7 @@ exports.isAuthentified = (req, res, next) => {
       next();
     }
   } catch {
-    console.log('UNOTAOTOIEO');
+    // console.log('UNOTAOTOIEO');
     res.status(401).json({
       error: new Error('Invalid request!'),
     });
