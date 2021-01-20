@@ -168,7 +168,7 @@ export default {
         labels: ['Win', 'Lose'],
         datasets: [
           {
-            backgroundColor: ['#3eac3e', '#AA0055'],
+            backgroundColor: ['#3eac3e', '#dc3545'],
             data: [this.nbQuizzWon, this.nbQuizzLost],
           },
         ],
@@ -238,7 +238,7 @@ export default {
           },
           {
             label: 'Quizz Lost',
-            backgroundColor: '#AA0055',
+            backgroundColor: '#dc3545',
             data: dataLost,
           },
         ],
