@@ -10,8 +10,8 @@
       <b-container style="margin: 0px; max-width: 100%">
         <b-container id="stats" class="w-75 mx-auto shadow">
           <b-row class="w-75 d-flex align-items-center mx-auto my-4 shadow sub">
-            <b-col cols="12" md="12">
-              <strong>Pseudo :</strong> {{ name }} <br />
+            <b-col cols="12" md="12" class="my-3">
+              <h4><strong>Pseudo :</strong> {{ name }}</h4>
             </b-col>
           </b-row>
           <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow sub">
