@@ -54,89 +54,112 @@ exports.getTopPlayer = (req, res) => {
 
 exports.updateUserEndlessStats = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
+    const score = req.body.score;
     jwt.verify(token, 'secret_key', (err, decoded) => {
         if (err)
             return res.status(401).json({
                 title: 'unauthorized',
             });
         categoryName = req.body.category;
-        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+        User.findById(decoded.userId).then(async user => {
+            let averageScore = score;
+            if(user.stats.nbQuizzPlayed != 0){
+                averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed - 1) + score) / user.stats.nbQuizzPlayed;
+            }
+
+            let averageCatScore = score;
+            if (user.stats.category[categoryName]){
+                averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + score) / user.stats.category[categoryName].nbQuizzPlayed;
+                }
+
+            await User.updateOne({ '_id': decoded.userId },
             {
                 '$inc': {
+                    'stats.nbQuizzPlayed': 1,
                     ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
                 },
-
-            }, async (err, result) => {
-                User.findById(decoded.userId).then(async user => {
-                    await user.updateNumberOfQuizzPlayed();
-                    user.updateBestEndlessScore(req.body.score);
-                }, (err, result) => { })
+                '$push': {
+                    'stats.scores': score
+                },
+                '$max': {
+                    'stats.bestScore': score,
+                    ['stats.category.' + categoryName + ".bestScore"]: score
+                },
+                '$set': {
+                    'stats.averageScore': averageScore,
+                    ['stats.category.' + categoryName + ".averageScore"]: averageCatScore
+                }
             });
+           
+            return res.status(200).json(user.stats);
+        });
 
     });
 }
 exports.updateUserStats = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
+    const nbWon = req.body.nbQuizzWon;
+    const nbLost = req.body.nbQuizzLost;
+    const score = req.body.score;
+    const time = req.body.time;
+
     jwt.verify(token, 'secret_key', (err, decoded) => {
         if (err)
             return res.status(401).json({
                 title: 'unauthorized',
             });
         categoryName = req.body.category;
-        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
+
+        User.findById(decoded.userId).then(async user => {
+            const timeValue = getValueTime(time);
+            
+            let averageScore = score;
+            let averageTime = timeValue;
+            if(user.stats.nbQuizzPlayed != 0){
+                averageScore = (user.stats.averageScore * (user.stats.nbQuizzPlayed - 1) + score) / user.stats.nbQuizzPlayed;
+                averageTime = (user.stats.averageTime * (user.stats.nbQuizzPlayed - 1) + timeValue) / user.stats.nbQuizzPlayed;
+            }
+
+            let averageCatScore = score;
+            let averageCatTime = timeValue;
+            if (user.stats.category[categoryName]){
+                averageCatScore = (user.stats.category[categoryName].averageScore * (user.stats.category[categoryName].nbQuizzPlayed - 1) + score) / user.stats.category[categoryName].nbQuizzPlayed;
+                averageCatTime = (user.stats.category[categoryName].averageTime * (user.stats.category[categoryName].nbQuizzPlayed - 1) + timeValue) / user.stats.category[categoryName].nbQuizzPlayed;
+            }
+
+            await User.updateOne({ '_id': decoded.userId },
             {
                 '$inc': {
-                    'stats.nbQuizzWon': req.body.nbQuizzWon,
-                    'stats.nbQuizzLost': req.body.nbQuizzLost,
-                    ["stats.category." + categoryName + ".nbQuizzWon"]: req.body.nbQuizzWon,
-                    ["stats.category." + categoryName + ".nbQuizzLost"]: req.body.nbQuizzLost,
+                    'stats.nbQuizzWon': nbWon,
+                    'stats.nbQuizzLost': nbLost,
+                    'stats.nbQuizzPlayed': 1,
+
+                    ["stats.category." + categoryName + ".nbQuizzWon"]: nbWon,
+                    ["stats.category." + categoryName + ".nbQuizzLost"]: nbLost,
                     ["stats.category." + categoryName + ".nbQuizzPlayed"]: 1,
                 },
-            }, (err, result) => {
-                User.findById(decoded.userId).then(async user => {
-                    if (user.stats.category[categoryName].bestScore == undefined) {
-                        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
-                            {
-                                '$set': {
-                                    ["stats.category." + categoryName + ".bestScore"]: req.body.score,
-                                    ["stats.category." + categoryName + ".averageScore"]: req.body.score,
-                                    ["stats.category." + categoryName + ".bestTime"]: req.body.time,
-                                    ["stats.category." + categoryName + ".averageTime"]: req.body.time,
-                                }
-                            }, (err, result) => {
-                                console.log("ERR0" + err);
-                            })
-                    }
-                    else {
-                        let newTime = req.body.time.split(":");
-                        let oldAverageTime = user.stats.category[categoryName].averageTime.split(":");
-                        let averageMin = common.addToAverage(user, parseInt(oldAverageTime[0]), parseInt(newTime[0]), categoryName);
-                        let averageSeconde = common.addToAverage(user, parseInt(oldAverageTime[1]), parseInt(newTime[1]), categoryName);
-                        this.averageTime = averageMin + ":" + averageSeconde;
-                        this.averageScore = common.addToAverage(user, user.stats.category[categoryName].averageScore, req.body.score, categoryName);
-
-                        let res = statsManagement.bestTimeAndScore(req, user, categoryName);
-                        this.bestScore = res[0];
-                        this.time = res[1];
-
-                        User.updateOne({ '_id': new mongodb.ObjectID(decoded.userId) },
-                            {
-                                '$set': {
-                                    ["stats.category." + categoryName + ".bestScore"]: this.bestScore,
-                                    ["stats.category." + categoryName + ".averageScore"]: this.averageScore,
-                                    ["stats.category." + categoryName + ".bestTime"]: this.time,
-                                    ["stats.category." + categoryName + ".averageTime"]: this.averageTime,
-                                }
-                            }, (err, result) => {
-                                console.log("ERR1" + err);
-                            })
-                    }
-                    await user.updateNumberOfQuizzPlayed();
-                    await user.updateBestScore(req.body.score, req.body.time);
-                    await user.updateAverageTime(req.body.time);
-                    user.updateAverageScore(req.body.score);
-                })
-            })
+                '$push': {
+                    'stats.scores': score,
+                    'stats.times': timeValue
+                },
+                '$max': {
+                    'stats.bestScore': score,
+                    ['stats.category.' + categoryName + ".bestScore"]: score
+                },
+                '$min': {
+                    'stats.bestTime': timeValue,
+                    ['stats.category.' + categoryName + ".bestTime"]: timeValue
+                },
+                '$set': {
+                    'stats.averageScore': averageScore,
+                    'stats.averageTime': averageTime,
+                    ['stats.category.' + categoryName + ".averageScore"]: averageCatScore,
+                    ['stats.category.' + categoryName + ".averageTime"]: averageCatTime
+                }
+            });
+           
+            return res.status(200).json(user.stats);
+        });
     });
 }
 
@@ -168,3 +191,8 @@ exports.updateCategoryStats = (req, res) => {
         category.updateSuccessRatio();
     })
 }
+
+function getValueTime(time){
+    let splitTime = time.split(":");
+    return parseFloat(splitTime[0]) * 60 + parseFloat(splitTime[1]);
+  }

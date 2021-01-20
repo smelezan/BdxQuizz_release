@@ -1,8 +1,6 @@
 <template>
     <div>
         <div id="title" class="profile">
-            <h1>Profile</h1>
-            <br />
         </div>
         <div>
             <b-container id="content" style="margin: 0px; max-width: 100%">
@@ -23,7 +21,7 @@
                             <strong>Quizz Played :</strong> {{nbQuizzPlayed}} <br />
                             <strong>Quizz Won :</strong> {{nbQuizzWon}} <br />
                             <strong>Quizz Lost :</strong> {{nbQuizzLost}} <br />
-                            <strong>Quizz Ratio :</strong> {{nbQuizzWon/nbQuizzPlayed}}
+                            <strong>Quizz Ratio :</strong> {{(nbQuizzWon/nbQuizzPlayed).toFixed(2)}}
                         </b-col>
                         <b-col cols="6" md="5" class="m-2">
                             <PieChart v-if="loaded" ref="quizz_chart" :chartdata="quizzData"></PieChart>
@@ -112,15 +110,20 @@ import BarChart from '@/components/BarChart';
             this.bestScore = res.data.stats.bestScore;
             this.averageScore = res.data.stats.averageScore;
 
-            this.bestTime = res.data.stats.bestTime;
-            this.averageTime = res.data.stats.averageTime;
+            const bestTime = res.data.stats.bestTime;
+            this.bestTime = parseInt(bestTime/60) + ":" + bestTime%60;
+            const averageTime = res.data.stats.averageTime;
+            this.averageTime = parseInt(averageTime/60) + ":" + averageTime%60;
 
             this.categories = res.data.stats.category;
-            console.log(this.categories);
 
-            const scores = res.data.stats.scores;
-            const times = res.data.stats.times;
-
+            this.setGeneralChart(res.data.stats.scores, res.data.stats.times);
+            this.setCategoryChart();
+            this.loaded = true;
+        });
+    },
+    methods: {
+        setGeneralChart(scores, times){
             let labels = [];
             for(let index = 0; index < scores.length; index++)
                 labels.push(index+1);
@@ -148,11 +151,7 @@ import BarChart from '@/components/BarChart';
                     data: times
                 }]
             }
-            this.setCategoryChart();
-            this.loaded = true;
-        });
-    },
-    methods: {
+        },
         setCategoryChart(){
             console.log(this.categories);
 
@@ -178,10 +177,8 @@ import BarChart from '@/components/BarChart';
                 dataBScore.push(this.categories[category].bestScore);
                 dataAScore.push(this.categories[category].averageScore);
 
-                const splitBest = this.categories[category].bestTime.split(":");
-                dataBTime.push(parseFloat(splitBest[0])*60 + parseFloat(splitBest[1]));
-                const splitAverage = this.categories[category].averageTime.split(":");
-                dataATime.push(parseFloat(splitAverage[0])*60 + parseFloat(splitAverage[1]));
+                dataBTime.push(this.categories[category].bestTime);
+                dataATime.push(this.categories[category].averageTime.toFixed(2));
             }
 
             this.catQuizzData = {
