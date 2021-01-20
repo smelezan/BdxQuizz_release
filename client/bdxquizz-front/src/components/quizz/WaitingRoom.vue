@@ -40,7 +40,6 @@ export default {
   },
   created() {
     this.socket.on('join', (params) => {
-      console.log(params.playersUsernames);
       this.usernames = params.playersUsernames;
     });
   },

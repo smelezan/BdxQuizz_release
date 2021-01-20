@@ -58,7 +58,6 @@ export default {
   },
   created() {
     axios.get('/api/categories').then((res) => {
-      console.log(res.data);
       this.allCategories = res.data.categories;
     });
   },
@@ -71,7 +70,6 @@ export default {
         const filter = this.allCategories.filter((item) =>
           item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
-        console.log(filter);
         return filter;
       } else {
         return this.allCategories;

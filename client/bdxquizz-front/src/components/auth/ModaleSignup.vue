@@ -62,7 +62,6 @@ export default {
             localStorage.setItem('userId', res.data.userId);
             this.$router.go(0);
           } else {
-            console.log(res.data);
             this.validation = false;
             this.errorMessage = 'something goes wrong';
           }
@@ -79,13 +78,11 @@ export default {
         username: this.form.username,
         password: this.form.password,
       };
-      console.log(user);
       axios.post('/api/auth/login', user).then(
         (res) => {
           if (res.status === 200) {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('userId', res.data.userId);
-            //console.log(res);
             this.$router.go(0);
           }
         },

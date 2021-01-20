@@ -38,7 +38,6 @@ export default {
   },
   created() {
     axios.get('/api/categories').then((res) => {
-      console.log(res.data);
       this.allCategories = res.data.categories;
     });
   },

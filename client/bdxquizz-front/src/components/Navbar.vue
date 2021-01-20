@@ -80,7 +80,6 @@ export default {
     },
   },
   mounted() {
-    console.log(localStorage.getItem('token'));
     axios
       .get('/api/user')
       .then((res) => {

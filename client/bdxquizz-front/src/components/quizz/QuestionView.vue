@@ -103,18 +103,15 @@ export default {
     };
   },
   created() {
-    console.log(this.mode);
     this.socket.on('question', (params) => {
       if (this.firstQuestion) {
         this.firstQuestion = false;
         setTimeout(this.chronoStart, 10);
       }
       this.isDisabled = false;
-      console.log(params);
       this.displayQuestion(params);
     });
     this.socket.on('answer', (params) => {
-      console.log(params);
       this.showAnswer(
         params.correctAnswer,
         this.currentAnswer,
@@ -125,10 +122,8 @@ export default {
       this.isDisabled = true;
     });
     this.socket.on('end', async (params) => {
-      console.log(params);
       const response = await axios.get(`/api/user/${params.player}`);
       const player = response.data;
-      console.log(response.data);
       this.finalClassment.push({
         player: player.user.username,
         results: params.results,
@@ -192,7 +187,6 @@ export default {
       const indexAnswer = propositions.findIndex(
         (element) => element === answer
       );
-      console.log(propsitionSelected);
       let indexProposition = indexAnswer;
       if (propsitionSelected) {
         indexProposition = propositions.findIndex(
@@ -201,7 +195,6 @@ export default {
       }
       if (isCorrect) this.result.correct += 1;
       else this.result.wrong += 1;
-      console.log(indexProposition);
       this.propositionsCards[indexProposition]['header_border_variant'] =
         'danger';
       this.propositionsCards[indexProposition]['border_variant'] = 'danger';
