@@ -14,8 +14,8 @@
               <h4><strong>Pseudo :</strong> {{ name }}</h4>
             </b-col>
           </b-row>
-          <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow sub">
-            <b-col cols="12" md="6">
+          <b-row class="w-75 d-flex align-items-center my-5 mx-auto shadow sub">
+            <b-col cols="12" md="6" class="mt-2">
               <strong>Quizz Played :</strong> {{ nbQuizzPlayed }} <br />
               <strong>Quizz Won :</strong> {{ nbQuizzWon }} <br />
               <strong>Quizz Lost :</strong> {{ nbQuizzLost }} <br />
@@ -30,7 +30,7 @@
                 :title="titleA"
               ></PieChart>
             </b-col>
-            <b-col cols="12" md="12">
+            <b-col cols="12" md="12" class="mb-4">
               <BarChart
                 v-if="loaded"
                 ref="quizz_chart"
