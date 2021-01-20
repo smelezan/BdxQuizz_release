@@ -143,7 +143,7 @@ export default {
         score: result.correct
       });
 
-      if (result.wrong < 5) {
+      if (result.wrong <= 5) {
         this.quizzWon = 1;
         this.quizzLost = 0;
       } else {
