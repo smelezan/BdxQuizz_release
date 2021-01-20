@@ -9,12 +9,12 @@
     <div id="content">
       <b-container style="margin: 0px; max-width: 100%">
         <b-container id="stats" class="w-75 mx-auto shadow">
-          <b-row class="w-75 d-flex align-items-center mx-auto my-4 shadow">
-            <b-col cols="12" md="12">
-              <strong>Pseudo :</strong> {{ name }} <br />
+          <b-row class="w-75 d-flex align-items-center mx-auto my-4 shadow sub">
+            <b-col cols="12" md="12" class="my-3">
+              <h4><strong>Pseudo :</strong> {{ name }}</h4>
             </b-col>
           </b-row>
-          <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow">
+          <b-row class="w-75 d-flex align-items-center mx-auto my-5 shadow sub">
             <b-col cols="12" md="6">
               <strong>Quizz Played :</strong> {{ nbQuizzPlayed }} <br />
               <strong>Quizz Won :</strong> {{ nbQuizzWon }} <br />
@@ -37,7 +37,7 @@
               ></BarChart>
             </b-col>
           </b-row>
-          <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow">
+          <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow sub">
             <b-col cols="12" md="6">
               <strong>Best Score :</strong> {{ bestScore }}
             </b-col>
@@ -59,7 +59,7 @@
               ></BarChart>
             </b-col>
           </b-row>
-          <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow">
+          <b-row class="w-75 d-flex align-items-center mx-auto my-5 p-2 shadow sub">
             <b-col cols="12" md="6">
               <strong>Best Time :</strong> {{ bestTime }}
             </b-col>
@@ -276,6 +276,10 @@ export default {
   border-radius: 10px;
   background-color: white;
   transform: translateY(-200px);
+}
+.sub{
+  border-radius: 20px;
+  background-color: #e6e6e675;
 }
 
 #content:before {
