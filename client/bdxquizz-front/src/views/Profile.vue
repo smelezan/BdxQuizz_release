@@ -43,7 +43,7 @@
             <b-col cols="12" md="6">
               <strong>Best Score :</strong> {{ bestScore }}
             </b-col>
-            <b-col cols="12" md="6" class="mb-3">
+            <b-col cols="12" md="6">
               <strong>Average Score :</strong> {{ averageScore }}
             </b-col>
             <b-col cols="12" md="12" class="mb-3">
@@ -67,7 +67,7 @@
             <b-col cols="12" md="6">
               <strong>Best Time :</strong> {{ bestTime }}
             </b-col>
-            <b-col cols="12" md="6" class="mb-3">
+            <b-col cols="12" md="6">
               <strong>Average Time :</strong> {{ averageTime }}
             </b-col>
             <b-col cols="12" md="12" class="mb-3">
