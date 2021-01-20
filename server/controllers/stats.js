@@ -155,7 +155,6 @@ exports.updateCategoryStats = (req, res) => {
             return res.status(401).json({ title: 'unauthorized' });
 
         categoryName = req.body.category;
-        console.log(categoryName);
         User.findById(decoded.userId).then(async user => {
             Category.findOne({ name: categoryName }).then(category => {
                 category.updateBestPlayer(user.username, req.body.score);

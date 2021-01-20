@@ -30,7 +30,6 @@ exports.login = (req, res) => {
     username: req.body.username,
     password: req.body.password,
   };
-  console.log(req.body);
   User.findOne({ username: userCheck.username }, (err, user) => {
     if (err)
       return res.status(500).json({

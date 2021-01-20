@@ -97,9 +97,6 @@ Room.methods.getNextQuestion = async function getNextQuestion(isFirst) {
       }
       this.currentNoQuestion += 1;
       await this.save();
-      console.log(
-        `getNextQuestion ${this.roomCode} - ${this.currentNoQuestion}`
-      );
       return this.questions[this.currentNoQuestion];
     }
   }
