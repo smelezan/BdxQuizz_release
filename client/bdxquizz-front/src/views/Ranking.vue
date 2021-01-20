@@ -35,10 +35,10 @@
                   <b-container style="margin: 0px; max-width: 100%">
                     <b-row>
                       <b-col cols="12" md="12">
-                        best player
+                        {{category.genStats.bestPlayer}}
                       </b-col>
                       <b-col cols="12" md="12">
-                        score
+                        {{category.genStats.bestScore}}
                       </b-col>
                     </b-row>
                   </b-container>
@@ -50,7 +50,7 @@
                         {{name}}
                       </b-col>
                       <b-col cols="12" md="12">
-                        score
+                        {{category.userStats.bestScore}}
                       </b-col>
                     </b-row>
                   </b-container>
@@ -78,12 +78,37 @@ export default {
       name: "username",
     };
   },
-  created() {
-    axios.get('/api/categories').then((res) => {
-      console.log(res.data);
-      this.categories = res.data.categories;
+  mounted() {
+    axios.get('/api/categories').then((resCat) => {
+      axios.get('/api/stats/user').then((resUser) => {
+        console.log(resCat.data);
+        console.log(resUser.data);
+        
+        this.name = resUser.data.username;
+
+        const allCategories = resCat.data.categories;
+        for(let category in resUser.data.stats.category){
+          const genStats = this.getCategory(allCategories, category);
+          this.categories.push({
+            name: category,
+            userStats: resUser.data.stats.category[category],
+            genStats: genStats
+          });
+        }
+        
+        console.log(this.categories);
+      });
     });
   },
+  methods: {
+    getCategory(allCategories, name){
+      for(let index in allCategories){
+        if(allCategories[index].name === name)
+          return allCategories[index].stats;
+      }
+      return null;
+    }
+  }
 };
 </script>
 

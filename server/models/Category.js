@@ -10,32 +10,23 @@ const Category = mongoose.Schema({
     required: true,
   },
   stats: {
-    totalPlayed: {
+    bestPlayer: {
+      type: String,
+      default: '',
+    },
+    bestScore: {
       type: Number,
       default: 0,
-    },
-    nbGoodAnswers: {
-      type: Number,
-      default: 0,
-    },
-    nbBadAnswers: {
-      type: Number,
-      default: 0,
-    },
-    successRatio: {
-      type: Number,
-      default: 0,
-    },
+    }
   },
 });
 
-Category.methods.updateSuccessRatio = async function updateSuccessRatio() {
-  if (this.stats.nbGoodAnswers + this.stats.nbBadAnswers > 0)
-    this.stats.successRatio =
-      (this.stats.nbGoodAnswers /
-        (this.stats.nbGoodAnswers + this.stats.nbBadAnswers)) *
-      100;
-  await this.save();
+Category.methods.updateBestPlayer = async function updateBestPlayer(name, score) {
+  if (this.stats.bestScore < score){
+    this.stats.bestScore = score;
+    this.stats.bestPlayer = name;
+    await this.save();
+  }
 };
 
 module.exports = mongoose.model('Category', Category);
