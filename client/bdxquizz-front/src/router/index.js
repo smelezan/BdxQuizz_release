@@ -44,6 +44,13 @@ const routes = [
     component: () =>
       import('../views/Profile.vue'),
   },
+  {
+    path: '/stats/categories',
+    name: 'Ranking',
+
+    component: () =>
+      import('../views/Ranking.vue'),
+  },
 ];
 
 const router = new VueRouter({
