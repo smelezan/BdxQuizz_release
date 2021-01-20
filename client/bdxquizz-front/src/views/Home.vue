@@ -1,14 +1,16 @@
 <template>
   <div>
     <div id="title" class="home">
-      <h1>Welcome to bdxQuizz!!</h1>
+      <h1>Welcome to bdxQuiz!!</h1>
       <br />
       <h2>Have fun and test your knowledge</h2>
       <h4>Check on the categories below</h4>
     </div>
     <div id="content">
       <b-container style="margin: 0px; max-width: 100%">
-        <b-row class="mt-2 mb-5 text-center justify-content-center d-flex align-items-center">
+        <b-row
+          class="mt-2 mb-5 text-center justify-content-center d-flex align-items-center"
+        >
           <b-col cols="12" md="3">
             <h1>Categories</h1>
           </b-col>
@@ -80,10 +82,10 @@ export default {
 </script>
 
 <style>
-h1{
+h1 {
   margin: 0px;
 }
-h4{
+h4 {
   margin: 0px;
 }
 </style>
